@@ -1,30 +1,12 @@
 import tw, {styled} from "twin.macro";
 
-export const TextArea = styled.textarea`
+export const MainContainer = styled.div`
   ${tw`
-    w-full
-    px-3
-    py-1.5
-    font-normal
-    text-4xl
-    text-gray-700
-    rounded
-    h-40 md:h-60
-    transition
-    placeholder:text-4xl
-    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+    grid
+    grid-cols-1
+    md:grid-cols-2
+    border
+    rounded-md
+    shadow
    `}
-`;
-
-export const LanguageDropdown = styled.select`
-  ${tw`
-    px-3
-    py-1.5
-    mx-3
-    my-1.5
-    border border-solid border-gray-300
-    rounded
-    ease-in-out
-    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
-    `}
 `;

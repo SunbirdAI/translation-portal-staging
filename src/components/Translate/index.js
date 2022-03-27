@@ -1,19 +1,34 @@
-import {LanguageDropdown, TextArea} from "./Translate.styles";
+import {MainContainer} from "./Translate.styles";
+import TranslateTextArea from "../TranslateTextArea";
+import SamplePhrases from "../SamplePhrases";
+import {useState} from "react";
 
-const Translate = ({placeholder, disabled}) => (
-    <div className={disabled ? "bg-gray-100" : "bg-white"}>
-        <LanguageDropdown>
-            <option value="1">English</option>
-            <option value="2">Luganda, Runyankole</option>
-            <option value="3">Three</option>
-        </LanguageDropdown>
-        <TextArea
-            placeholder={placeholder}
-            disabled={disabled}
-            readonly={disabled}
-        >
-        </TextArea>
-    </div>
-);
+const localLanguages = ['Acholi', 'Ateso', 'Luganda', 'Lugbara', 'Runyankole'];
+const localLangString = localLanguages.join(" or ");
+
+const sourceDropDownList = ['English', localLangString];
+
+const getTargetDropdownList = (sourceLanguage) => {
+    return sourceLanguage === localLangString ? ['English'] : localLanguages
+}
+
+
+const Translate = () => {
+    const [sourceLanguage, setSourceLanguage] = useState('English')
+    return (
+        <MainContainer>
+            <TranslateTextArea
+                placeholder="Enter text"
+                dropDownList={sourceDropDownList}
+                setSourceLanguage={setSourceLanguage}/>
+            <TranslateTextArea
+                placeholder="Translation"
+                disabled={true}
+                dropDownList={getTargetDropdownList(sourceLanguage)}
+            />
+            <SamplePhrases/>
+        </MainContainer>
+    );
+};
 
 export default Translate;

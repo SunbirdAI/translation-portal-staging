@@ -1,19 +1,14 @@
 import './App.css';
-import {MainContainer, Wrapper} from "./GlobalStyles";
-import Translate from "./components/Translate";
-import SamplePhrases from "./components/SamplePhrases";
+import {Wrapper} from "./GlobalStyles";
 import Header from "./components/Header";
+import Translate from "./components/Translate";
 
 function App() {
     return (
         <div className="h-screen">
             <Header/>
             <Wrapper>
-                <MainContainer>
-                    <Translate placeholder="Enter text"/>
-                    <Translate placeholder="Translation" disabled={true}/>
-                    <SamplePhrases/>
-                </MainContainer>
+                <Translate/>
             </Wrapper>
         </div>
     );
