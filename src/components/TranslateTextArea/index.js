@@ -1,15 +1,27 @@
 import {LanguageDropdown, TextArea} from "./TranslateTextArea.styles";
-import {useState} from "react";
 
 
-const TranslateTextArea = ({placeholder, disabled, dropDownList, setSourceLanguage}) => {
-    const onChange = (event) => {
-        if(!disabled)
+const TranslateTextArea = ({
+                               placeholder,
+                               disabled,
+                               dropDownList,
+                               setSourceLanguage,
+                               text,
+                               translation,
+                               setText
+                           }) => {
+    const onLanguageChange = (event) => {
+        if (!disabled)
             setSourceLanguage(event.target.value);
     }
+
+    const onTextChange = (event) => {
+        setText(event.target.value);
+    }
+
     return (
         <div className={disabled ? "bg-gray-100" : "bg-white"}>
-            <LanguageDropdown onChange={onChange}>
+            <LanguageDropdown onChange={onLanguageChange}>
                 {dropDownList.map((language, index) =>
                     <option key={index} value={language}>{language}</option>
                 )}
@@ -18,8 +30,9 @@ const TranslateTextArea = ({placeholder, disabled, dropDownList, setSourceLangua
                 placeholder={placeholder}
                 disabled={disabled}
                 readonly={disabled}
+                value={disabled ? translation : text}
+                onChange={onTextChange}
             >
-                {}
             </TextArea>
         </div>
     );

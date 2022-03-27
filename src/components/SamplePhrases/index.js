@@ -21,11 +21,16 @@ const greetings = [
 ]
 
 
-const WordList = ({sentences}) => {
+const WordList = ({sentences, setSamplePhrase}) => {
+
+    const onClick = (index) => {
+        setSamplePhrase(sentences[index]);
+    };
+
     return (
         <PhraseList>
             {sentences.map((sentence, index) => (
-                <PhraseListItem key={index}>
+                <PhraseListItem key={index} onClick={() => onClick(index)}>
                     {sentence}
                 </PhraseListItem>
             ))}
@@ -34,17 +39,17 @@ const WordList = ({sentences}) => {
 };
 
 
-const TabPanel = ({value, index, sentences}) => (
+const TabPanel = ({value, index, sentences, setSamplePhrase}) => (
     <div>
         {
             value === index && (
-                <WordList sentences={sentences}/>
+                <WordList sentences={sentences} setSamplePhrase={setSamplePhrase}/>
             )
         }
     </div>
 );
 
-const SamplePhrases = () => {
+const SamplePhrases = ({setSamplePhrase}) => {
 
     const [tab, setTab] = useState(0);
 
@@ -65,8 +70,18 @@ const SamplePhrases = () => {
                         <Tab label="Random"/>
                         <Tab label="Greetings & Socials"/>
                     </Tabs>
-                    <TabPanel value={tab} index={0} sentences={randomWords}/>
-                    <TabPanel value={tab} index={1} sentences={greetings}/>
+                    <TabPanel
+                        value={tab}
+                        index={0}
+                        sentences={randomWords}
+                        setSamplePhrase={setSamplePhrase}
+                    />
+                    <TabPanel
+                        value={tab}
+                        index={1}
+                        sentences={greetings}
+                        setSamplePhrase={setSamplePhrase}
+                    />
                 </AccordionDetails>
             </Accordion>
         </SamplePhrasesAccordion>

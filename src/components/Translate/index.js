@@ -14,19 +14,23 @@ const getTargetDropdownList = (sourceLanguage) => {
 
 
 const Translate = () => {
-    const [sourceLanguage, setSourceLanguage] = useState('English')
+    const [sourceLanguage, setSourceLanguage] = useState('English');
+    const [sourceText, setSourceText] = useState('');
     return (
         <MainContainer>
             <TranslateTextArea
                 placeholder="Enter text"
                 dropDownList={sourceDropDownList}
-                setSourceLanguage={setSourceLanguage}/>
+                setSourceLanguage={setSourceLanguage}
+                text={sourceText}
+                setText={setSourceText}
+            />
             <TranslateTextArea
                 placeholder="Translation"
                 disabled={true}
                 dropDownList={getTargetDropdownList(sourceLanguage)}
             />
-            <SamplePhrases/>
+            <SamplePhrases setSamplePhrase={setSourceText}/>
         </MainContainer>
     );
 };
