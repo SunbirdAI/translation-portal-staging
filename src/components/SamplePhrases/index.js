@@ -4,29 +4,41 @@ import {Tabs, Tab} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useState} from "react";
 
+const randomWords = [
+    'During the coronavirus outbreak, people began making masks out of clothes',
+    'What reasons do youths give for dropping out of school?',
+    'Help the needy members in society',
+    'What causes some children not to pass well in school?',
+    'Workers can now choose to work from home or come to the office.',
+    'Banks will be open for only six hours a day.',
+    'Everyone needs the freedom to freely express their ideas.'
+]
 
-const WordList = () => {
+const greetings = [
+    'Good morning, how are you doing?',
+    'When can we meet and have a chat?',
+    'I hope to see you again soon'
+]
+
+
+const WordList = ({sentences}) => {
     return (
         <PhraseList>
-            <PhraseListItem>
-                First
-            </PhraseListItem>
-            <PhraseListItem>
-                Second
-            </PhraseListItem>
-            <PhraseListItem>
-                Third
-            </PhraseListItem>
+            {sentences.map((sentence, index) => (
+                <PhraseListItem key={index}>
+                    {sentence}
+                </PhraseListItem>
+            ))}
         </PhraseList>
     );
 };
 
 
-const TabPanel = ({value, index}) => (
+const TabPanel = ({value, index, sentences}) => (
     <div>
         {
             value === index && (
-                <WordList/>
+                <WordList sentences={sentences}/>
             )
         }
     </div>
@@ -53,8 +65,8 @@ const SamplePhrases = () => {
                         <Tab label="Random"/>
                         <Tab label="Greetings & Socials"/>
                     </Tabs>
-                    <TabPanel value={tab} index={0}/>
-                    <TabPanel value={tab} index={1}/>
+                    <TabPanel value={tab} index={0} sentences={randomWords}/>
+                    <TabPanel value={tab} index={1} sentences={greetings}/>
                 </AccordionDetails>
             </Accordion>
         </SamplePhrasesAccordion>
