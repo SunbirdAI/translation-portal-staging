@@ -2,10 +2,12 @@ import './App.css';
 import {MainContainer, Wrapper} from "./GlobalStyles";
 import Translate from "./components/Translate";
 import SamplePhrases from "./components/SamplePhrases";
+import Header from "./components/Header";
 
 function App() {
     return (
         <div className="h-screen">
+            <Header/>
             <Wrapper>
                 <MainContainer>
                     <Translate placeholder="Enter text"/>

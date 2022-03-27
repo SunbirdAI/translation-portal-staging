@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
     grid
     grid-cols-1
     place-items-center
-    h-full
+    h-5/6
     mx-5
     my-3
     md:mx-16

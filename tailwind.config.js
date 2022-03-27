@@ -3,7 +3,11 @@ module.exports = {
       "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'sunbird-navy-blue': '#282850'
+      }
+    },
   },
   plugins: [],
 }
