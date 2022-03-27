@@ -1,12 +1,18 @@
 import './App.css';
-import {Wrapper} from "./GlobalStyles";
+import {MainContainer, Wrapper} from "./GlobalStyles";
+import Translate from "./components/Translate";
 
 function App() {
-  return (
-    <Wrapper>
-      <h1 className="text-3xl font-bold underline">Hello</h1>
-    </Wrapper>
-  );
+    return (
+        <div className="h-screen">
+            <Wrapper>
+                <MainContainer>
+                    <Translate placeholder="Enter text"/>
+                    <Translate placeholder="Translation" disabled={true}/>
+                </MainContainer>
+            </Wrapper>
+        </div>
+    );
 }
 
 export default App;
