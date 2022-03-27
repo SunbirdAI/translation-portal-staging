@@ -9,6 +9,7 @@ export const TextArea = styled.textarea`
     text-4xl
     text-gray-700
     rounded
+    h-40 md:h-60
     transition
     placeholder:text-4xl
     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none

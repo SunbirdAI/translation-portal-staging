@@ -1,14 +1,32 @@
-import {SamplePhrasesAccordion} from "./SamplePhrases.styles";
+import {PhraseList, PhraseListItem, SamplePhrasesAccordion} from "./SamplePhrases.styles";
 import {Accordion, AccordionSummary, AccordionDetails} from '@mui/material';
 import {Tabs, Tab} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useState} from "react";
 
+
+const WordList = () => {
+    return (
+        <PhraseList>
+            <PhraseListItem>
+                First
+            </PhraseListItem>
+            <PhraseListItem>
+                Second
+            </PhraseListItem>
+            <PhraseListItem>
+                Third
+            </PhraseListItem>
+        </PhraseList>
+    );
+};
+
+
 const TabPanel = ({value, index}) => (
     <div>
         {
             value === index && (
-                <h2>Tab {value + 1}</h2>
+                <WordList/>
             )
         }
     </div>
