@@ -1,5 +1,6 @@
 import {LanguageDropdown, TextArea} from "./TranslateTextArea.styles";
 
+// TODO: Replace dropdown with react select
 
 const TranslateTextArea = ({
                                placeholder,
@@ -20,7 +21,7 @@ const TranslateTextArea = ({
     }
 
     return (
-        <div className={disabled ? "bg-gray-100" : "bg-white"}>
+        <div className={disabled ? "bg-gray-100 shadow" : "bg-white shadow"}>
             <LanguageDropdown onChange={onLanguageChange}>
                 {dropDownList.map((language, index) =>
                     <option key={index} value={language}>{language}</option>

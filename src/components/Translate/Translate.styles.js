@@ -5,8 +5,7 @@ export const MainContainer = styled.div`
     grid
     grid-cols-1
     md:grid-cols-2
-    border
     rounded-md
-    shadow
+    m-3
    `}
 `;

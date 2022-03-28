@@ -4,7 +4,6 @@ export const Wrapper = styled.div`
   ${tw`
     grid
     grid-cols-1
-    place-items-center
     h-5/6
     mx-5
     my-3
