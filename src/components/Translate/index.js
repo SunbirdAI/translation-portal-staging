@@ -1,36 +1,88 @@
 import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {getTranslation} from "../../API";
 
 const localLanguages = ['Acholi', 'Ateso', 'Luganda', 'Lugbara', 'Runyankole'];
 const localLangString = localLanguages.join(" or ");
+const localLangOptions = [
+    {
+        label: 'Acholi',
+        value: '>>ach<<'
+    },
+    {
+        label: 'Ateso',
+        value: '>>teo<<'
+    },
+    {
+        label: 'Luganda',
+        value: '>>lug<<'
+    },
+    {
+        label: 'Lugbara',
+        value: '>>lgg<<'
+    },
+    {
+        label: 'Runyankole',
+        value: '>>nyn<<'
+    }
+]
 
-const sourceDropDownList = ['English', localLangString];
+const englishOption = {
+    label: 'English',
+    value: 'English'
+}
 
-const getTargetDropdownList = (sourceLanguage) => {
-    return sourceLanguage === localLangString ? ['English'] : localLanguages
+const sourceOptions = [
+    englishOption,
+    {
+        label: localLangString,
+        value: localLangString
+    }
+];
+
+const getTargetOptions = (sourceLanguage) => {
+    return sourceLanguage === localLangString ? [englishOption] : localLangOptions
 }
 
 
 const Translate = () => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
+    const [targetLanguage, setTargetLanguage] = useState(localLangOptions[0].value);
     const [sourceText, setSourceText] = useState('');
     const [translation, setTranslation] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const prevTarget = useRef();
+
+    useEffect(() => {
+        if (sourceLanguage === localLangString) setTargetLanguage('English');
+        else setTargetLanguage(localLangOptions[0].value);
+    }, [sourceLanguage])
 
     const translate = async (source) => {
-        if(source.length < 15) {
-            setTranslation(isLoading ? '...' : '');
-            return;
+        // if (source.length < 15) {
+        //     setTranslation(isLoading && source.length > 0 ? '...' : '');
+        //     return;
+        // }
+        try {
+            const model = sourceLanguage === 'English' ? 'en-mul' : 'mul-en';
+            const sentence = model === 'en-mul' ? `${targetLanguage}${source}` : source;
+            const result = await getTranslation(sentence, model);
+            setTranslation(result);
+        } catch (e) {
+            // TODO: Log errors here
+            setTranslation('');
         }
-        const result = await getTranslation(source);
-        setTranslation(result);
         setIsLoading(false);
     }
     useEffect(() => {
+        if (prevTarget.current !== targetLanguage) setTranslation('')
         setIsLoading(true);
+        prevTarget.current = targetLanguage;
+        // if(sourceText.length < 15 && sourceText.length > 0) {
+        //     setTranslation('...')
+        // } else setTranslation(t => t + ' ...');
         const timeOutId = setTimeout(() => translate(sourceText), 500);
         // if (sourceText.length >= 15) {
         //     setIsLoading(true);
@@ -38,16 +90,16 @@ const Translate = () => {
         //     translate(sourceText);
         // }
         return () => clearTimeout(timeOutId);
-    }, [sourceText]);
+    }, [sourceText, targetLanguage]);
 
-    useEffect(() => {
-        if (isLoading) setTranslation(t => t + ' ...');
-    }, [isLoading]);
+    // useEffect(() => {
+    //     if (isLoading) setTranslation(t => t + ' ...');
+    // }, [isLoading]);
     return (
         <MainContainer>
             <TranslateTextArea
                 placeholder="Enter text"
-                dropDownList={sourceDropDownList}
+                dropDownOptions={sourceOptions}
                 setSourceLanguage={setSourceLanguage}
                 text={sourceText}
                 setText={setSourceText}
@@ -55,8 +107,9 @@ const Translate = () => {
             <TranslateTextArea
                 placeholder="Translation"
                 disabled={true}
-                dropDownList={getTargetDropdownList(sourceLanguage)}
-                translation={translation}
+                dropDownOptions={getTargetOptions(sourceLanguage)}
+                setTargetLanguage={setTargetLanguage}
+                translation={translation + (isLoading ? ' ...' : '')}
             />
             <SamplePhrases setSamplePhrase={setSourceText}/>
         </MainContainer>

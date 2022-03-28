@@ -1,12 +1,12 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-export const getTranslation = async (sentence) => {
+export const getTranslation = async (sentence, model) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            "model": "mul-en",
+            "model": model,
             "inputs": sentence
         })
     }
