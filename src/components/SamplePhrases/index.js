@@ -3,22 +3,7 @@ import {Accordion, AccordionSummary, AccordionDetails} from '@mui/material';
 import {Tabs, Tab} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useState} from "react";
-
-const randomWords = [
-    'During the coronavirus outbreak, people began making masks out of clothes',
-    'What reasons do youths give for dropping out of school?',
-    'Help the needy members in society',
-    'What causes some children not to pass well in school?',
-    'Workers can now choose to work from home or come to the office.',
-    'Banks will be open for only six hours a day.',
-    'Everyone needs the freedom to freely express their ideas.'
-]
-
-const greetings = [
-    'Good morning, how are you doing?',
-    'When can we meet and have a chat?',
-    'I hope to see you again soon'
-]
+import {samplePhraseDict} from "../../constants";
 
 
 const WordList = ({sentences, setSamplePhrase}) => {
@@ -49,7 +34,7 @@ const TabPanel = ({value, index, sentences, setSamplePhrase}) => (
     </div>
 );
 
-const SamplePhrases = ({setSamplePhrase}) => {
+const SamplePhrases = ({sourceLanguage, setSamplePhrase}) => {
 
     const [tab, setTab] = useState(0);
 
@@ -67,21 +52,17 @@ const SamplePhrases = ({setSamplePhrase}) => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Tabs value={tab} onChange={handleChange}>
-                        <Tab label="Random"/>
-                        <Tab label="Greetings & Socials"/>
+                        {samplePhraseDict[sourceLanguage].map((section, index) => <Tab key={index} label={section[0]}/>)}
                     </Tabs>
-                    <TabPanel
-                        value={tab}
-                        index={0}
-                        sentences={randomWords}
-                        setSamplePhrase={setSamplePhrase}
-                    />
-                    <TabPanel
-                        value={tab}
-                        index={1}
-                        sentences={greetings}
-                        setSamplePhrase={setSamplePhrase}
-                    />
+                    {samplePhraseDict[sourceLanguage].map((section, index) =>
+                        <TabPanel
+                            value={tab}
+                            key={index}
+                            index={index}
+                            sentences={section[1]}
+                            setSamplePhrase={setSamplePhrase}
+                        />
+                    )}
                 </AccordionDetails>
             </Accordion>
         </SamplePhrasesAccordion>

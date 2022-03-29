@@ -3,9 +3,8 @@ import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
 import {getTranslation} from "../../API";
+import {localLangString} from "../../constants";
 
-const localLanguages = ['Acholi', 'Ateso', 'Luganda', 'Lugbara', 'Runyankole'];
-const localLangString = localLanguages.join(" or ");
 const localLangOptions = [
     {
         label: 'Acholi',
@@ -54,6 +53,7 @@ const Translate = () => {
     const [translation, setTranslation] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const prevTarget = useRef();
+    const isMounted = useRef(false);
 
     useEffect(() => {
         if (sourceLanguage === localLangString) setTargetLanguage('English');
@@ -77,6 +77,10 @@ const Translate = () => {
         setIsLoading(false);
     }
     useEffect(() => {
+        if (!isMounted.current || sourceText === '') {
+            isMounted.current = true;
+            return;
+        }
         if (prevTarget.current !== targetLanguage) setTranslation('')
         setIsLoading(true);
         prevTarget.current = targetLanguage;
@@ -111,7 +115,7 @@ const Translate = () => {
                 setTargetLanguage={setTargetLanguage}
                 translation={translation + (isLoading ? ' ...' : '')}
             />
-            <SamplePhrases setSamplePhrase={setSourceText}/>
+            <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText}/>
         </MainContainer>
     );
 };
