@@ -6,7 +6,7 @@ export const TextArea = styled.textarea`
     px-3
     py-1.5
     font-normal
-    text-4xl
+    text-2xl md:text-4xl
     text-gray-700
     rounded
     h-40 md:h-60
@@ -22,6 +22,9 @@ export const LanguageDropdown = styled.select`
     py-1.5
     mx-3
     my-1.5
+    max-w-[250px]
+    overflow-hidden
+    break-normal
     border border-solid border-gray-300
     rounded
     ease-in-out

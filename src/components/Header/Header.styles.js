@@ -2,6 +2,9 @@ import tw, {styled} from "twin.macro";
 
 export const Nav = styled.div`
   ${tw`
+    flex
+    fixed
+    w-screen
     items-center
     bg-sunbird-navy-blue
     p-6
@@ -11,31 +14,14 @@ export const Nav = styled.div`
   `}
 `;
 
-export const BrandWrapper = styled.div`
-  ${tw`
-    flex
-    items-center
-    text-white
-    mr-6
-    w-full
-  `}
-`;
-
-export const Brand = styled.div`
-  ${tw`
-    font-semibold
-    text-2xl
-    tracking-tight
-    `}
-`;
-
 export const Title = styled.h1`
   ${tw`
     font-semibold
     text-white
-    text-2xl
-    text-center
+    text-4xl
+    md:absolute
     w-full
+    right-0
+    text-center
     `}
 `;
-
