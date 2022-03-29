@@ -51,7 +51,7 @@ const SamplePhrases = ({sourceLanguage, setSamplePhrase}) => {
                     <h2 className="font-bold text-xl">Sample Phrases</h2>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Tabs value={tab} onChange={handleChange}>
+                    <Tabs value={tab} onChange={handleChange} variant="scrollable" scrollButtons="auto">
                         {samplePhraseDict[sourceLanguage].map((section, index) => <Tab key={index} label={section[0]}/>)}
                     </Tabs>
                     {samplePhraseDict[sourceLanguage].map((section, index) =>
