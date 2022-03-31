@@ -1,4 +1,5 @@
 import {LanguageDropdown, TextArea} from "./TranslateTextArea.styles";
+import {CircularProgress, LinearProgress} from "@mui/material";
 
 // TODO: Replace dropdown with react select
 
@@ -10,13 +11,13 @@ const TranslateTextArea = ({
                                setTargetLanguage,
                                text,
                                translation,
-                               setText
+                               setText,
+                               isLoading
                            }) => {
     const onLanguageChange = (event) => {
         if (!disabled) {
             setSourceLanguage(event.target.value);
-        }
-        else setTargetLanguage(event.target.value);
+        } else setTargetLanguage(event.target.value);
     }
 
     const onTextChange = (event) => {
@@ -38,6 +39,7 @@ const TranslateTextArea = ({
                 onChange={onTextChange}
             >
             </TextArea>
+            {isLoading && disabled && <LinearProgress color="secondary"/>}
         </div>
     );
 };

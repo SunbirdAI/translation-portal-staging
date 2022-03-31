@@ -61,10 +61,11 @@ const Translate = () => {
     }, [sourceLanguage])
 
     const translate = async (source) => {
-        // if (source.length < 15) {
-        //     setTranslation(isLoading && source.length > 0 ? '...' : '');
-        //     return;
-        // }
+        if (source === '') {
+            setTranslation('');
+            setIsLoading(false);
+            return;
+        }
         try {
             const model = sourceLanguage === 'English' ? 'en-mul' : 'mul-en';
             const sentence = model === 'en-mul' ? `${targetLanguage}${source}` : source;
@@ -77,7 +78,7 @@ const Translate = () => {
         setIsLoading(false);
     }
     useEffect(() => {
-        if (!isMounted.current || sourceText === '') {
+        if (!isMounted.current) {
             isMounted.current = true;
             return;
         }
@@ -113,7 +114,8 @@ const Translate = () => {
                 disabled={true}
                 dropDownOptions={getTargetOptions(sourceLanguage)}
                 setTargetLanguage={setTargetLanguage}
-                translation={translation + (isLoading ? ' ...' : '')}
+                translation={translation}
+                isLoading={isLoading}
             />
             <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText}/>
         </MainContainer>
