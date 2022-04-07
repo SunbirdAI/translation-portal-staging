@@ -5,11 +5,11 @@ import Header from "./components/Header";
 import Translate from "./components/Translate";
 import {useEffect} from "react";
 
-const GA4_TRACKING_ID = process.env.GA4_TRACKING_ID;
+const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
 function App() {
     useEffect(() => {
-        ReactGA.initialize(GA4_TRACKING_ID);
+        ReactGA.initialize(tracking_id);
         ReactGA.send("pageview");
     }, []);
     return (
