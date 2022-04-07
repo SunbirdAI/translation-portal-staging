@@ -4,8 +4,8 @@ import {Wrapper} from "./GlobalStyles";
 import Header from "./components/Header";
 import Translate from "./components/Translate";
 import {useEffect} from "react";
+import {tracking_id} from "./API";
 
-const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
 function App() {
     useEffect(() => {

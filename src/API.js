@@ -1,4 +1,5 @@
 const API_URL = process.env.REACT_APP_API_URL;
+export const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
 
 export const getTranslation = async (sentence, model) => {
