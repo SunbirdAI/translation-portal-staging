@@ -13,7 +13,7 @@ export const samplePhraseDict = {
             'Everyone needs the freedom to freely express their ideas.'
         ]],
         ['Greetings and Socials', [
-            'Good morning, how are you doing?',
+            'How are you?',
             'When can we meet and have a chat?',
             'I hope to see you again soon'
         ]]
