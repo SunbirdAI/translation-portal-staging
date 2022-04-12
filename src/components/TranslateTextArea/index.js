@@ -11,6 +11,8 @@ const TranslateTextArea = ({
                                text,
                                translation,
                                setText,
+                               sourceLanguage,
+                               targetLanguage,
                                isLoading
                            }) => {
     const onLanguageChange = (event) => {
@@ -39,7 +41,12 @@ const TranslateTextArea = ({
             >
             </TextArea>
             {isLoading && disabled && <LinearProgress color="secondary"/>}
-            {disabled && <Feedback text={translation}/>}
+            {disabled && <Feedback
+                sourceText={text}
+                translation={translation}
+                from={sourceLanguage}
+                to={targetLanguage}
+            />}
         </div>
     );
 };

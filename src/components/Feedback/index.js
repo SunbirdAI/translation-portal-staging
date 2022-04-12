@@ -1,21 +1,22 @@
 import {useEffect, useRef, useState} from "react";
 import {Alert, Button} from "@mui/material";
 import {ThumbDown, ThumbUp} from "@mui/icons-material";
+import {sendFeedback} from "../../API";
 
 
-const Feedback = ({text}) => {
+const Feedback = ({sourceText, translation, from, to}) => {
     const [rated, setRated] = useState(false);
     const [rating, setRating] = useState(0);  // 0 -> unrated, 1 -> good, 2 -> bad.
     const [showAlert, setShowAlert] = useState(false);
     const prevText = useRef();
 
     useEffect(() => {
-        if (prevText.current !== text) {
+        if (prevText.current !== translation) {
             setRated(false);
             setRating(0);
         }
-        prevText.current = text;
-    }, [text]);
+        prevText.current = translation;
+    }, [translation]);
 
     useEffect(() => {
         const timeId = setTimeout(() => {
@@ -25,11 +26,15 @@ const Feedback = ({text}) => {
         return () => clearTimeout(timeId);
     }, [showAlert])
 
-    const handleSubmit = (isGood) => {
+    const handleSubmit = async (isGood) => {
         setRated(true);
         setRating(isGood ? 1 : 2);
         setShowAlert(true);
-        // TODO: Send data to backend
+        try {
+            await sendFeedback(isGood ? 'Good' : 'Bad', sourceText, translation, from, to);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     return (
@@ -38,14 +43,14 @@ const Feedback = ({text}) => {
             <div className="grid grid-cols-2 m-2 gap-2">
                 <Button
                     variant={rating === 1 ? "contained" : "outlined"}
-                    disabled={rated || text === ''}
+                    disabled={rated || translation === ''}
                     endIcon={<ThumbUp/>}
                     onClick={() => handleSubmit(true)}
                 >
                     Good translation
                 </Button>
                 <Button
-                    disabled={rated || text === ''}
+                    disabled={rated || translation === ''}
                     variant={rating === 2 ? "contained" : "outlined"}
                     endIcon={<ThumbDown/>}
                     onClick={() => handleSubmit(false)}

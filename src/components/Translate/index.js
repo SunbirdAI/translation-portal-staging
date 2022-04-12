@@ -115,6 +115,9 @@ const Translate = () => {
                 dropDownOptions={getTargetOptions(sourceLanguage)}
                 setTargetLanguage={setTargetLanguage}
                 translation={translation}
+                text={sourceText}
+                sourceLanguage={sourceLanguage}
+                targetLanguage={targetLanguage}
                 isLoading={isLoading}
             />
             <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText}/>
