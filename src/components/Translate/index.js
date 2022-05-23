@@ -2,7 +2,7 @@ import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
-import {getTranslation} from "../../API";
+import {getTranslation, sendFeedback} from "../../API";
 import {localLangString} from "../../constants";
 
 const localLangOptions = [
@@ -76,6 +76,11 @@ const Translate = () => {
             setTranslation('');
         }
         setIsLoading(false);
+        try {
+            await sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
+        } catch (e) {
+            console.log(e);
+        }
     }
     useEffect(() => {
         if (!isMounted.current) {
