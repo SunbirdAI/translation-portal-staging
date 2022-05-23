@@ -76,11 +76,6 @@ const Translate = () => {
             setTranslation('');
         }
         setIsLoading(false);
-        try {
-            await sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
-        } catch (e) {
-            console.log(e);
-        }
     }
     useEffect(() => {
         if (!isMounted.current) {
@@ -94,6 +89,7 @@ const Translate = () => {
         //     setTranslation('...')
         // } else setTranslation(t => t + ' ...');
         const timeOutId = setTimeout(() => translate(sourceText), 500);
+        sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
         // if (sourceText.length >= 15) {
         //     setIsLoading(true);
         //     setTranslation(t => t + ' ...');
