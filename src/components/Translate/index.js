@@ -2,7 +2,7 @@ import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
-import {getTranslation} from "../../API";
+import {getTranslation, sendFeedback} from "../../API";
 import {localLangString} from "../../constants";
 
 const localLangOptions = [
@@ -89,6 +89,7 @@ const Translate = () => {
         //     setTranslation('...')
         // } else setTranslation(t => t + ' ...');
         const timeOutId = setTimeout(() => translate(sourceText), 500);
+        sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
         // if (sourceText.length >= 15) {
         //     setIsLoading(true);
         //     setTranslation(t => t + ' ...');
