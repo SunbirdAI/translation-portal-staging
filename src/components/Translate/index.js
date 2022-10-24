@@ -2,7 +2,7 @@ import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
-import {getTranslation, sendFeedback, textToSpeech} from "../../API";
+import {translateHF, sendFeedback, textToSpeech} from "../../API";
 import {localLangString} from "../../constants";
 
 const localLangOptions = [
@@ -79,7 +79,7 @@ const Translate = () => {
         try {
             const model = sourceLanguage === 'English' ? 'en-mul' : 'mul-en';
             const sentence = model === 'en-mul' ? `${targetLanguage}${source}` : source;
-            const result = await getTranslation(sentence, model);
+            const result = await translateHF(sentence, model);
             setTranslation(result);
         } catch (e) {
             // TODO: Log errors here
@@ -98,7 +98,7 @@ const Translate = () => {
         // if(sourceText.length < 15 && sourceText.length > 0) {
         //     setTranslation('...')
         // } else setTranslation(t => t + ' ...');
-        const timeOutId = setTimeout(() => translate(sourceText), 500);
+        const timeOutId = setTimeout(() => translate(sourceText), 5000);
         sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
         // if (sourceText.length >= 15) {
         //     setIsLoading(true);

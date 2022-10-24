@@ -99,11 +99,11 @@ export const textToSpeech = async (text) => {
     });
 }
 
-export const translate = async (sentence, model) => {
-    await pRetry(() => getTranslation(sentence, model), {
+export const translateHF = async (sentence, model) => {
+    return await pRetry(() => getTranslation(sentence, model), {
         onFailedAttempt: error => {
             console.log(`Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`);
         },
         retries: 7
     })
-}
+};
