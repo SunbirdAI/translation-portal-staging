@@ -8,6 +8,8 @@ const textToSpeechUrl = "https://api-inference.huggingface.co/models/Sunbird/sun
 const multipleToEnglishUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-mul-en";
 const englishToMultipleUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-en-mul";
 
+const translationEndpointUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/translate`
+
 
 export const getTranslation = async (sentence, model) => {
     const requestOptions = {
@@ -21,6 +23,39 @@ export const getTranslation = async (sentence, model) => {
     let url = model === 'en-mul' ? englishToMultipleUrl : multipleToEnglishUrl;
     const response = await (await fetch(url, requestOptions)).json();
     return response[0]["generated_text"];
+}
+
+
+export const getTranslationNewVersion = async (text, sourceLang, targetLang) => {
+    let requestOptions = {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${process.env.REACT_APP_SB_API_TOKEN}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "source_language": sourceLang,
+            "target_language": targetLang,
+            "text": text
+        })
+    };
+
+    try {
+        let response = await fetch(translationEndpointUrl, requestOptions);
+        if (response.status === 200) {
+            let responseJson = await response.json();
+            translatedText = responseJson["text"];
+        } else {
+            let errorMsg = `${response.status} ${response.statusText}`;
+            console.log(errorMsg);
+            throw new Error(errorMsg);
+        }
+    } catch (err) {
+        console.log(err);
+        return "Translation error";
+    }
+
+    return translatedText;
 }
 
 export const sendFeedback = async (feedback, sourceText, translation, from, to) => {
