@@ -4,29 +4,10 @@ const FEEDBACK_URL = process.env.REACT_APP_FEEDBACK_URL;
 const HUGGING_FACE_API_KEY = process.env.REACT_APP_HUGGING_FACE_API_KEY;
 export const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
+const translationUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/translate`;
 const textToSpeechUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-lug-tts";
-const multipleToEnglishUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-mul-en";
-const englishToMultipleUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-en-mul";
 
-const translationEndpointUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/translate`
-
-
-export const getTranslation = async (sentence, model) => {
-    const requestOptions = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            "inputs": sentence
-        })
-    }
-
-    let url = model === 'en-mul' ? englishToMultipleUrl : multipleToEnglishUrl;
-    const response = await (await fetch(url, requestOptions)).json();
-    return response[0]["generated_text"];
-}
-
-
-export const getTranslationNewVersion = async (text, sourceLang, targetLang) => {
+export const getTranslation = async (text, sourceLang, targetLang) => {
     let requestOptions = {
         method: "POST",
         headers: {
@@ -40,8 +21,10 @@ export const getTranslationNewVersion = async (text, sourceLang, targetLang) => 
         })
     };
 
+    let translatedText = "";
+
     try {
-        let response = await fetch(translationEndpointUrl, requestOptions);
+        let response = await fetch(translationUrl, requestOptions);
         if (response.status === 200) {
             let responseJson = await response.json();
             translatedText = responseJson["text"];
@@ -134,8 +117,8 @@ export const textToSpeech = async (text) => {
     });
 }
 
-export const translateHF = async (sentence, model) => {
-    return await pRetry(() => getTranslation(sentence, model), {
+export const translateSB = async (text, sourceLang, targetLang) => {
+    return await pRetry(() => getTranslation(text, sourceLang, targetLang), {
         onFailedAttempt: error => {
             console.log(`Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`);
         },

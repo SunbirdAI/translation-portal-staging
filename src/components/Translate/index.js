@@ -2,29 +2,29 @@ import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
-import {translateHF, sendFeedback, textToSpeech} from "../../API";
+import {translateSB, sendFeedback, textToSpeech} from "../../API";
 import {localLangString} from "../../constants";
 
 const localLangOptions = [
     {
         label: 'Luganda',
-        value: '>>lug<<'
+        value: 'Luganda'
     },
     {
         label: 'Acholi',
-        value: '>>ach<<'
+        value: 'Acholi'
     },
     {
         label: 'Ateso',
-        value: '>>teo<<'
+        value: 'Ateso'
     },
     {
         label: 'Lugbara',
-        value: '>>lgg<<'
+        value: 'Lugbara'
     },
     {
         label: 'Runyankole',
-        value: '>>nyn<<'
+        value: 'Runyankole'
     }
 ]
 
@@ -77,9 +77,9 @@ const Translate = () => {
             return;
         }
         try {
-            const model = sourceLanguage === 'English' ? 'en-mul' : 'mul-en';
-            const sentence = model === 'en-mul' ? `${targetLanguage}${source}` : source;
-            const result = await translateHF(sentence, model);
+            const sentence = source;
+            console.log(sourceLanguage, targetLanguage);
+            const result = await translateSB(sentence, sourceLanguage, targetLanguage);
             setTranslation(result);
         } catch (e) {
             // TODO: Log errors here
