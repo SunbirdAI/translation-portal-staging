@@ -72,9 +72,7 @@ const Translate = () => {
             return;
         }
         try {
-            const sentence = source;
-            console.log(sourceLanguage, targetLanguage);
-            const result = await translateSB(sentence, sourceLanguage, targetLanguage);
+            const result = await translateSB(source, sourceLanguage, targetLanguage);
             setTranslation(result);
         } catch (e) {
             // TODO: Log errors here

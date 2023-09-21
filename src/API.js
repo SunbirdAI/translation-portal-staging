@@ -59,7 +59,6 @@ export const sendFeedback = async (feedback, sourceText, translation, from, to) 
     return response;
 }
 
-
 const getSpeech = async (text) => {
     const data = {
         "inputs": text
