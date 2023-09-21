@@ -3,7 +3,6 @@ import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
 import {translateSB, sendFeedback, textToSpeech} from "../../API";
-import {localLangString} from "../../constants";
 
 const localLangOptions = [
     {
@@ -28,23 +27,19 @@ const localLangOptions = [
     }
 ]
 
-const englishOption = {
+const englishOption = [{
     label: 'English',
     value: 'English'
-}
+}]
 
 const sourceOptions = [
-    englishOption,
-    {
-        label: localLangString,
-        value: localLangString
-    }
+    ...englishOption,
+    ...localLangOptions
 ];
 
 const getTargetOptions = (sourceLanguage) => {
-    return sourceLanguage === localLangString ? [englishOption] : localLangOptions
+    return sourceLanguage === 'English' ? localLangOptions : englishOption
 }
-
 
 const Translate = () => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
@@ -56,7 +51,7 @@ const Translate = () => {
     const isMounted = useRef(false);
 
     useEffect(() => {
-        if (sourceLanguage === localLangString) setTargetLanguage('English');
+        if (sourceLanguage !== 'English') setTargetLanguage('English');
         else setTargetLanguage(localLangOptions[0].value);
     }, [sourceLanguage])
 
