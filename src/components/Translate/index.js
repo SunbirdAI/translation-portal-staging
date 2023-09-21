@@ -2,49 +2,44 @@ import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
 import {useEffect, useRef, useState} from "react";
-import {translateHF, sendFeedback, textToSpeech} from "../../API";
-import {localLangString} from "../../constants";
+import {translateSB, sendFeedback, textToSpeech} from "../../API";
 
 const localLangOptions = [
     {
         label: 'Luganda',
-        value: '>>lug<<'
+        value: 'Luganda'
     },
     {
         label: 'Acholi',
-        value: '>>ach<<'
+        value: 'Acholi'
     },
     {
         label: 'Ateso',
-        value: '>>teo<<'
+        value: 'Ateso'
     },
     {
         label: 'Lugbara',
-        value: '>>lgg<<'
+        value: 'Lugbara'
     },
     {
         label: 'Runyankole',
-        value: '>>nyn<<'
+        value: 'Runyankole'
     }
 ]
 
-const englishOption = {
+const englishOption = [{
     label: 'English',
     value: 'English'
-}
+}]
 
 const sourceOptions = [
-    englishOption,
-    {
-        label: localLangString,
-        value: localLangString
-    }
+    ...englishOption,
+    ...localLangOptions
 ];
 
 const getTargetOptions = (sourceLanguage) => {
-    return sourceLanguage === localLangString ? [englishOption] : localLangOptions
+    return sourceLanguage === 'English' ? localLangOptions : englishOption
 }
-
 
 const Translate = () => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
@@ -56,7 +51,7 @@ const Translate = () => {
     const isMounted = useRef(false);
 
     useEffect(() => {
-        if (sourceLanguage === localLangString) setTargetLanguage('English');
+        if (sourceLanguage !== 'English') setTargetLanguage('English');
         else setTargetLanguage(localLangOptions[0].value);
     }, [sourceLanguage])
 
@@ -77,9 +72,7 @@ const Translate = () => {
             return;
         }
         try {
-            const model = sourceLanguage === 'English' ? 'en-mul' : 'mul-en';
-            const sentence = model === 'en-mul' ? `${targetLanguage}${source}` : source;
-            const result = await translateHF(sentence, model);
+            const result = await translateSB(source, sourceLanguage, targetLanguage);
             setTranslation(result);
         } catch (e) {
             // TODO: Log errors here

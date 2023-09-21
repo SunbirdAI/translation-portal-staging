@@ -4,23 +4,41 @@ const FEEDBACK_URL = process.env.REACT_APP_FEEDBACK_URL;
 const HUGGING_FACE_API_KEY = process.env.REACT_APP_HUGGING_FACE_API_KEY;
 export const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
+const translationUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/translate`;
 const textToSpeechUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-lug-tts";
-const multipleToEnglishUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-mul-en";
-const englishToMultipleUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-en-mul";
 
-
-export const getTranslation = async (sentence, model) => {
-    const requestOptions = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+export const getTranslation = async (text, sourceLang, targetLang) => {
+    let requestOptions = {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${process.env.REACT_APP_SB_API_TOKEN}`,
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-            "inputs": sentence
+            "source_language": sourceLang,
+            "target_language": targetLang,
+            "text": text
         })
+    };
+
+    let translatedText = "";
+
+    try {
+        let response = await fetch(translationUrl, requestOptions);
+        if (response.status === 200) {
+            let responseJson = await response.json();
+            translatedText = responseJson["text"];
+        } else {
+            let errorMsg = `${response.status} ${response.statusText}`;
+            console.log(errorMsg);
+            throw new Error(errorMsg);
+        }
+    } catch (err) {
+        console.log(err);
+        return "Translation error";
     }
 
-    let url = model === 'en-mul' ? englishToMultipleUrl : multipleToEnglishUrl;
-    const response = await (await fetch(url, requestOptions)).json();
-    return response[0]["generated_text"];
+    return translatedText;
 }
 
 export const sendFeedback = async (feedback, sourceText, translation, from, to) => {
@@ -40,7 +58,6 @@ export const sendFeedback = async (feedback, sourceText, translation, from, to) 
     const response = await (await fetch(FEEDBACK_URL, requestOptions)).json();
     return response;
 }
-
 
 const getSpeech = async (text) => {
     const data = {
@@ -99,8 +116,8 @@ export const textToSpeech = async (text) => {
     });
 }
 
-export const translateHF = async (sentence, model) => {
-    return await pRetry(() => getTranslation(sentence, model), {
+export const translateSB = async (text, sourceLang, targetLang) => {
+    return await pRetry(() => getTranslation(text, sourceLang, targetLang), {
         onFailedAttempt: error => {
             console.log(`Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`);
         },
