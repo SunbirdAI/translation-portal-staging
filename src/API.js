@@ -41,7 +41,7 @@ export const getTranslation = async (text, sourceLang, targetLang) => {
     return translatedText;
 }
 
-export const sendFeedback = async (feedback, sourceText, translation, from, to) => {
+export const sendFeedback = async (feedback, CorrectTranslation, username, sourceText, translation, from, to) => {
     const time = Date.now();
     const requestOptions = {
         method: 'POST',
@@ -52,6 +52,8 @@ export const sendFeedback = async (feedback, sourceText, translation, from, to) 
             SourceText: sourceText,
             LanguageFrom: from,
             LanguageTo: to,
+            username: username,
+            CorrectTranslation: CorrectTranslation,
             TranslatedText: translation
         })
     }
