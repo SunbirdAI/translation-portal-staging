@@ -4,10 +4,12 @@ const FEEDBACK_URL = process.env.REACT_APP_FEEDBACK_URL;
 const HUGGING_FACE_API_KEY = process.env.REACT_APP_HUGGING_FACE_API_KEY;
 export const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
-const translationUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/translate`;
+const translationUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/nllb_translate`;
 const textToSpeechUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-lug-tts";
 
 export const getTranslation = async (text, sourceLang, targetLang) => {
+    console.log(`sourceLang ${sourceLang}`);
+    console.log(`targetLang ${targetLang}`);
     let requestOptions = {
         method: "POST",
         headers: {
@@ -27,7 +29,7 @@ export const getTranslation = async (text, sourceLang, targetLang) => {
         let response = await fetch(translationUrl, requestOptions);
         if (response.status === 200) {
             let responseJson = await response.json();
-            translatedText = responseJson["text"];
+            translatedText = responseJson.output.data.translated_text;
         } else {
             let errorMsg = `${response.status} ${response.statusText}`;
             console.log(errorMsg);
