@@ -1,5 +1,5 @@
 export const samplePhraseDict = {
-    "English": [
+    "eng": [
         ["Random", [
             'During the coronavirus outbreak, people began making masks out of clothes',
             'What reasons do youths give for dropping out of school?',
@@ -15,7 +15,7 @@ export const samplePhraseDict = {
             'I hope to see you again soon'
         ]]
     ],
-    "Luganda": [
+    "lug": [
         ["Luganda", [
             "Mu kubalukawo kw'akawuka ka sennyiga kolona abantu baatandika okukola masiki mu ngoye.",
             "Nsonga ki abavubuka ze bawa okuwanduka mu ssomero?",
@@ -26,7 +26,7 @@ export const samplePhraseDict = {
             "Buli omu yeetaaga eddembe okwoleka endowooza ze mu bwetaaye."
         ]
     ]],
-    "Runyankole": [
+    "nyn": [
         ["Runyankole", [
             "Oburwaire bwa Korona ku bwatandikire, abantu baatandika kukora masiki z'emyenda.",
             "Ni shonga ki ezi eminyeeto erikuha ezirikubareetera kuruga omu mashomero.",
@@ -37,7 +37,7 @@ export const samplePhraseDict = {
             "Buri omwe naayenda obugabe bw'okugamba enshonga ze."
         ]]
     ],
-    "Acholi": [
+    "ach": [
         ["Acholi", [
             "I kare ma two Corona opoto, dano ocako yubu bongi me boyo um",
             "Tyen lok ango ma bulu miyo pi giko kwan?",
@@ -48,7 +48,7 @@ export const samplePhraseDict = {
             "Dano weng mito gubed ki twero me miyo tam ki lok kun nongo gibedo agonya"
         ]]
     ],
-    "Ateso": [
+    "teo": [
         ["Ateso", [
             "Kapak na abwangunor ekorona opotu itunga ogeutu aswam aitabalan nurapis aituk keda ekume keda igoen.",
             "Anubo abongonokineta ijanakinete atumunak kanu alemanar kosomero.",
@@ -59,7 +59,7 @@ export const samplePhraseDict = {
             "Nginitunganan ekot ailajara kanu einer nukec aomisio."
         ]]
     ],
-    "Lugbara": [
+    "lgg": [
         ["Lugbara", [
             "Sa'wa azo corona niri si, O'bi eyi e'do afa su omvua azini tia 'diyi ede bongo eyi si.",
             "E'yo anzi ode eyini fe eyini ani sukulu kuzu ja 'diyi e'yo ngo eyi?",
