@@ -1,7 +1,7 @@
 import {MainContainer} from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, useCallback} from "react";
 import {translateSB, sendFeedback, textToSpeech} from "../../API";
 
 const localLangOptions = [
@@ -70,7 +70,8 @@ const Translate = () => {
         setIsLoading(false);
     }
 
-    const translate = async (source) => {
+    // Inside your component
+    const translate = useCallback(async (source) => {
         if (source === '') {
             setTranslation('');
             setIsLoading(false);
@@ -80,35 +81,25 @@ const Translate = () => {
             const result = await translateSB(source, sourceLanguage, targetLanguage);
             setTranslation(result);
         } catch (e) {
-            // TODO: Log errors here
             setTranslation('');
+            console.log(e);
         }
         setIsLoading(false);
-    }
+    }, [sourceLanguage, targetLanguage]); // Dependencies needed for translate function
+
     useEffect(() => {
         if (!isMounted.current) {
             isMounted.current = true;
             return;
         }
-        if (prevTarget.current !== targetLanguage) setTranslation('')
+        if (prevTarget.current !== targetLanguage) setTranslation('');
         setIsLoading(true);
         prevTarget.current = targetLanguage;
-        // if(sourceText.length < 15 && sourceText.length > 0) {
-        //     setTranslation('...')
-        // } else setTranslation(t => t + ' ...');
         const timeOutId = setTimeout(() => translate(sourceText), 5000);
         sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
-        // if (sourceText.length >= 15) {
-        //     setIsLoading(true);
-        //     setTranslation(t => t + ' ...');
-        //     translate(sourceText);
-        // }
         return () => clearTimeout(timeOutId);
-    }, [sourceText, targetLanguage]);
+    }, [sourceText, targetLanguage, sourceLanguage, translate, translation]); // Include all necessary dependencies
 
-    // useEffect(() => {
-    //     if (isLoading) setTranslation(t => t + ' ...');
-    // }, [isLoading]);
     return (
         <MainContainer>
             <TranslateTextArea
@@ -129,7 +120,9 @@ const Translate = () => {
                 targetLanguage={targetLanguage}
                 isLoading={isLoading}
                 handleTextToSpeech={handleTextToSpeech}
+                showCopyButton={true}
             />
+
             <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText}/>
         </MainContainer>
     );
