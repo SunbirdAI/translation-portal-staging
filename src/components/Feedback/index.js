@@ -9,7 +9,7 @@ const Feedback = ({ sourceText, translation, from, to }) => {
   const [showAlert, setShowAlert] = useState(false);
   const prevText = useRef();
   const [correctTranslation, setCorrectTranslation] = useState('');
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('break-the-system-user');
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
