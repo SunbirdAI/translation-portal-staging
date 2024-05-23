@@ -29,7 +29,7 @@ export const getTranslation = async (text, sourceLang, targetLang) => {
         let response = await fetch(translationUrl, requestOptions);
         if (response.status === 200) {
             let responseJson = await response.json();
-            translatedText = responseJson.output.data.translated_text;
+            translatedText = responseJson.output.translated_text;
         } else {
             let errorMsg = `${response.status} ${response.statusText}`;
             console.log(errorMsg);
