@@ -1,50 +1,22 @@
-import {MainContainer} from "./Translate.styles";
+import { MainContainer } from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import SamplePhrases from "../SamplePhrases";
-import {useEffect, useRef, useState, useCallback} from "react";
-import {translateSB, sendFeedback, textToSpeech} from "../../API";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { debounce } from 'lodash';
+import { languageId, translateSB, sendFeedback, textToSpeech } from "../../API";
 
 const localLangOptions = [
-    {
-        label: 'Luganda',
-        value: 'lug'
-    },
-    {
-        label: 'Acholi',
-        value: 'ach'
-    },
-    {
-        label: 'Ateso',
-        value: 'teo'
-    },
-    {
-        label: 'Lugbara',
-        value: 'lgg'
-    },
-    {
-        label: 'Runyankole',
-        value: 'nyn'
-    }
-]
-
-const englishOption = [{
-    label: 'English',
-    value: 'eng'
-}]
-
-const sourceOptions = [
-    ...englishOption,
-    ...localLangOptions
+    { label: 'English', value: 'eng' },
+    { label: 'Luganda', value: 'lug' },
+    { label: 'Acholi', value: 'ach' },
+    { label: 'Ateso', value: 'teo' },
+    { label: 'Lugbara', value: 'lgg' },
+    { label: 'Runyankole', value: 'nyn' }
 ];
 
-// const getTargetOptions = (sourceLanguage) => {
-//     return sourceLanguage === 'English' ? localLangOptions : englishOption
-// }
-
-const getTargetOptions = (sourceLanguage) => {
-    // Filter out the selected source language from all available options
-    return sourceOptions.filter(option => option.value !== sourceLanguage);
-};
+const autoOption = [{ label: 'Auto detection', value: 'auto-detection' }];
+const sourceOptions = [...autoOption, ...localLangOptions];
+const getTargetOptions = () => localLangOptions;
 
 const Translate = () => {
     const [sourceLanguage, setSourceLanguage] = useState('eng');
@@ -52,25 +24,54 @@ const Translate = () => {
     const [sourceText, setSourceText] = useState('');
     const [translation, setTranslation] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [detectedLanguage, setDetectedLanguage] = useState('');
     const prevTarget = useRef();
     const isMounted = useRef(false);
+    const isComponentMounted = useRef(true);
 
     useEffect(() => {
-        if (sourceLanguage !== 'eng') setTargetLanguage('eng');
-        else setTargetLanguage(localLangOptions[0].value);
-    }, [sourceLanguage])
+        return () => {
+            isComponentMounted.current = false;
+        };
+    }, []);
 
     const handleTextToSpeech = async () => {
         setIsLoading(true);
         try {
-            await textToSpeech(translation)
+            await textToSpeech(translation);
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
-        setIsLoading(false);
-    }
+        if (isComponentMounted.current) {
+            setIsLoading(false);
+        }
+    };
 
-    // Inside your component
+    const detectLanguage = useCallback(debounce(async (text) => {
+        if (text === '') {
+            setSourceLanguage('eng');
+            return;
+        }
+        try {
+            const detectedLanguage = await languageId(text);
+            if (isComponentMounted.current) {
+                if (detectedLanguage !== targetLanguage) {
+                    setDetectedLanguage(detectedLanguage);
+                    setSourceLanguage(detectedLanguage);
+                } else {
+                    setTranslation("Detected language is the same as the target language.")
+                    console.error("Detected language is the same as the target language.");
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }, 1000), [targetLanguage]);
+
+    useEffect(() => {
+        detectLanguage(sourceText);
+    }, [sourceText, detectLanguage]);
+
     const translate = useCallback(async (source) => {
         if (source === '') {
             setTranslation('');
@@ -79,13 +80,19 @@ const Translate = () => {
         }
         try {
             const result = await translateSB(source, sourceLanguage, targetLanguage);
-            setTranslation(result);
+            if (isComponentMounted.current) {
+                setTranslation(result);
+            }
         } catch (e) {
-            setTranslation('');
-            console.log(e);
+            if (isComponentMounted.current) {
+                setTranslation('');
+            }
+            console.error(e);
         }
-        setIsLoading(false);
-    }, [sourceLanguage, targetLanguage]); // Dependencies needed for translate function
+        if (isComponentMounted.current) {
+            setIsLoading(false);
+        }
+    }, [sourceLanguage, targetLanguage]);
 
     useEffect(() => {
         if (!isMounted.current) {
@@ -98,7 +105,7 @@ const Translate = () => {
         const timeOutId = setTimeout(() => translate(sourceText), 5000);
         sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
         return () => clearTimeout(timeOutId);
-    }, [sourceText, targetLanguage, sourceLanguage, translate, translation]); // Include all necessary dependencies
+    }, [sourceText, targetLanguage, sourceLanguage, translate, translation]);
 
     return (
         <MainContainer>
@@ -108,11 +115,12 @@ const Translate = () => {
                 setSourceLanguage={setSourceLanguage}
                 text={sourceText}
                 setText={setSourceText}
+                detectedLanguage={detectedLanguage}
             />
             <TranslateTextArea
                 placeholder="Translation"
                 disabled={true}
-                dropDownOptions={getTargetOptions(sourceLanguage)}
+                dropDownOptions={getTargetOptions()}
                 setTargetLanguage={setTargetLanguage}
                 translation={translation}
                 text={sourceText}
@@ -122,8 +130,7 @@ const Translate = () => {
                 handleTextToSpeech={handleTextToSpeech}
                 showCopyButton={true}
             />
-
-            <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText}/>
+            <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText} />
         </MainContainer>
     );
 };

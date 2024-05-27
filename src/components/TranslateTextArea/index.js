@@ -4,6 +4,16 @@ import Feedback from "../Feedback";
 import { VolumeUp, ContentCopy } from "@mui/icons-material";
 import React, { useState } from 'react';
 
+// Language code mapping
+const languageNames = {
+    eng: 'English',
+    lug: 'Luganda',
+    ach: 'Acholi',
+    teo: 'Ateso',
+    lgg: 'Lugbara',
+    nyn: 'Runyankole'
+};
+
 const TranslateTextArea = ({
     placeholder,
     disabled,
@@ -16,7 +26,8 @@ const TranslateTextArea = ({
     sourceLanguage,
     targetLanguage,
     isLoading,
-    handleTextToSpeech
+    handleTextToSpeech,
+    detectedLanguage
 }) => {
     const [copySuccess, setCopySuccess] = useState(false);
 
@@ -42,11 +53,14 @@ const TranslateTextArea = ({
 
     return (
         <div className={disabled ? "bg-gray-100 shadow" : "bg-white shadow"}>
-            <LanguageDropdown onChange={onLanguageChange}>
+            <LanguageDropdown onChange={onLanguageChange} value={disabled ? targetLanguage : sourceLanguage}>
                 {dropDownOptions.map((option, index) =>
                     <option key={index} value={option.value}>{option.label}</option>
                 )}
             </LanguageDropdown>
+            {detectedLanguage && (
+                <small>Auto detected Language: {languageNames[detectedLanguage]}</small>
+            )}
             <TextArea
                 placeholder={placeholder}
                 disabled={disabled}
