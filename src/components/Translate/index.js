@@ -24,12 +24,14 @@ const getTargetOptions = (sourceLanguage) => {
 };
 
 const Translate = () => {
-    const [sourceLanguage, setSourceLanguage] = useState('eng');
+    const [sourceLanguage, setSourceLanguage] = useState(' ');
     const [targetLanguage, setTargetLanguage] = useState(localLangOptions[1].value);
     const [sourceText, setSourceText] = useState('');
     const [translation, setTranslation] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [detectedLanguage, setDetectedLanguage] = useState('');
+    const [autoDetected, setAutoDetected] = useState(true);
+    const [charCountLimit, setCharCountLimit] = useState(true);
     const [showNote, setShowNote] = useState(true);
     const prevTarget = useRef();
     const isMounted = useRef(false);
@@ -55,14 +57,16 @@ const Translate = () => {
 
     const detectLanguage = useCallback(debounce(async (text) => {
         if (text === '') {
-            setSourceLanguage('eng');
+            setSourceLanguage(' ');
             return;
         }
         try {
-            const detectedLanguage = await languageId(text);
+            const detectedLanguage = await languageId(text.substring(0,18));
             if (isComponentMounted.current) {
-                setDetectedLanguage(detectedLanguage);
-                setSourceLanguage(detectedLanguage);
+                if(autoDetected){
+                    setDetectedLanguage(detectedLanguage);
+                    setSourceLanguage(detectedLanguage);
+                }
                 if (detectedLanguage === targetLanguage) {
                     setTranslation("Detected language is the same as the target language.")
                     console.error("Detected language is the same as the target language.");
@@ -116,7 +120,7 @@ const Translate = () => {
         <div>
             {showNote && (
                 <Note>
-                    <strong>Note:</strong> Our auto language detection currently supports the following languages: English, Luganda, Acholi, Ateso, Lugbara, and Runyankole.
+                    <>Note:</> Our auto language detection currently supports the following languages: English, Luganda, Acholi, Ateso, Lugbara, and Runyankole.
                     We are actively working on improving this feature and adding support for more languages in the future.
                     <CloseButton onClick={() => setShowNote(false)}>✖</CloseButton>
                 </Note>
@@ -129,6 +133,9 @@ const Translate = () => {
                     text={sourceText}
                     setText={setSourceText}
                     detectedLanguage={detectedLanguage}
+                    setAutoDetected={setAutoDetected}
+                    autoDetected={autoDetected}
+                    charCountLimit={charCountLimit}
                 />
                 <TranslateTextArea
                     placeholder="Translation"

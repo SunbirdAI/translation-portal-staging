@@ -1,8 +1,8 @@
-import { LanguageDropdown, TextArea } from "./TranslateTextArea.styles";
+import { LanguageDropdown, DropdownOption, TextArea, ResponsiveContainer, CharCount } from "./TranslateTextArea.styles";
 import { Button, LinearProgress, Snackbar } from "@mui/material";
 import Feedback from "../Feedback";
 import { VolumeUp, ContentCopy } from "@mui/icons-material";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Language code mapping
 const languageNames = {
@@ -13,6 +13,8 @@ const languageNames = {
     lgg: 'Lugbara',
     nyn: 'Runyankole'
 };
+
+const MAX_CHAR_COUNT = 5000;
 
 const TranslateTextArea = ({
     placeholder,
@@ -27,18 +29,38 @@ const TranslateTextArea = ({
     targetLanguage,
     isLoading,
     handleTextToSpeech,
-    detectedLanguage
+    detectedLanguage,
+    setAutoDetected,
+    autoDetected,
+    charCountLimit
 }) => {
     const [copySuccess, setCopySuccess] = useState(false);
+    const [charCount, setCharCount] = useState(0);
+
+    useEffect(() => {
+        setCharCount(text.length);
+    }, [text]);
 
     const onLanguageChange = (event) => {
         if (!disabled) {
             setSourceLanguage(event.target.value);
+            if (event.target.value === 'auto-detection') {
+                setAutoDetected(true)
+            } else {
+                setAutoDetected(false)
+            }
+            console.log(event.target.value)
         } else setTargetLanguage(event.target.value);
     }
 
     const onTextChange = (event) => {
-        setText(event.target.value);
+        const newText = event.target.value;
+        if (charCountLimit && newText.length <= MAX_CHAR_COUNT) {
+            setText(newText);
+            setCharCount(newText.length);
+        } else {
+            setText(newText);
+        }
     }
 
     const copyToClipboard = async () => {
@@ -52,15 +74,21 @@ const TranslateTextArea = ({
     }
 
     return (
-        <div className={disabled ? "bg-gray-100 shadow" : "bg-white shadow"}>
+        <ResponsiveContainer disabled={disabled}>
             <LanguageDropdown onChange={onLanguageChange} value={disabled ? targetLanguage : sourceLanguage}>
-                {dropDownOptions.map((option, index) =>
-                    <option key={index} value={option.value}>{option.label}</option>
-                )}
+                {dropDownOptions.map((option, index) => (
+                    <DropdownOption key={index} value={option.value}>
+                        {option.label}
+                    </DropdownOption>
+                ))}
             </LanguageDropdown>
-            {detectedLanguage && (
-                <small>Auto detected Language: {languageNames[detectedLanguage]}</small>
+
+            {autoDetected && detectedLanguage && (
+                <small className="italic text-xs text-blue-600">
+                    Detected : {languageNames[detectedLanguage]}
+                </small>
             )}
+
             <TextArea
                 placeholder={placeholder}
                 disabled={disabled}
@@ -68,38 +96,56 @@ const TranslateTextArea = ({
                 value={disabled ? translation : text}
                 onChange={onTextChange}
             />
+
+            {charCountLimit && (
+                <CharCount>
+                    {charCount}/{MAX_CHAR_COUNT} characters
+                </CharCount>
+            )}
+
             {isLoading && disabled && <LinearProgress color="secondary" />}
-            {!isLoading && targetLanguage === "lug" && <Button
-                disabled={translation === ''}
-                endIcon={<VolumeUp />}
-                onClick={() => handleTextToSpeech()}
-            >
-                <span className="italic text-xs"> (BETA) </span>
-            </Button>
-            }
-            {disabled && <Button
-                onClick={copyToClipboard}
-                disabled={!translation}
-                endIcon={<ContentCopy />}
-                size="small"
-                style={{ marginLeft: 'auto' }}
-            >
-                Copy
-            </Button>}
-            {disabled && <Feedback
-                sourceText={text}
-                translation={translation}
-                from={sourceLanguage}
-                to={targetLanguage}
-            />}
+
+            {!isLoading && targetLanguage === "lug" && (
+                <Button
+                    disabled={translation === ''}
+                    endIcon={<VolumeUp />}
+                    onClick={handleTextToSpeech}
+                    className="mt-2"
+                >
+                    <span className="italic text-xs">(BETA)</span>
+                </Button>
+            )}
+
+            {disabled && (
+                <Button
+                    onClick={copyToClipboard}
+                    disabled={!translation}
+                    endIcon={<ContentCopy />}
+                    size="small"
+                    className="mt-2 ml-auto"
+                >
+                    Copy
+                </Button>
+            )}
+
+            {disabled && (
+                <Feedback
+                    sourceText={text}
+                    translation={translation}
+                    from={sourceLanguage}
+                    to={targetLanguage}
+                />
+            )}
+
             <Snackbar
                 open={copySuccess}
                 autoHideDuration={3000}
                 message="Translation copied!"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             />
-        </div>
+        </ResponsiveContainer>
     );
 };
 
 export default TranslateTextArea;
+

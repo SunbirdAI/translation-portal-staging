@@ -5,9 +5,17 @@ export const MainContainer = styled.div`
     grid
     grid-cols-1
     md:grid-cols-2
+    gap-4
     rounded-md
     m-3
+    p-3
   `}
+  @media (min-width: 768px) {
+    ${tw`p-6`}
+  }
+  @media (min-width: 1024px) {
+    ${tw`p-8`}
+  }
 `;
 
 export const Note = styled.div`
@@ -16,8 +24,8 @@ export const Note = styled.div`
     w-full
     items-center
     p-6
-    bg-yellow-200
-    text-yellow-800
+    bg-gray-100 shadow
+    text-gray-700
     rounded-md
     mb-4
     justify-between
@@ -37,3 +45,4 @@ export const CloseButton = styled.button`
     text-lg
   `}
 `;
+
