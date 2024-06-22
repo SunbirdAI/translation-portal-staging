@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, TextField, Grid } from "@mui/material";
 import { ThumbDown, ThumbUp } from "@mui/icons-material";
 import { sendFeedback } from "../../API";
 
@@ -34,7 +34,6 @@ const Feedback = ({ sourceText, translation, from, to }) => {
     try {
       await sendFeedback(isGood ? 'Good' : 'Bad', correctTranslation, username, sourceText, translation, from, to);
       setCorrectTranslation('');
-      // setUsername('');
       setShowDialog(false);
     } catch (e) {
       console.log(e);
@@ -42,29 +41,33 @@ const Feedback = ({ sourceText, translation, from, to }) => {
   };
 
   return (
-    <div className="p-4 max-w-xl mx-auto">
-      <p>Please help us improve the translation quality with your feedback.</p>
-      <div className="grid grid-cols-2 gap-4">
-        <Button
-          variant={rating === 1 ? "contained" : "outlined"}
-          disabled={rated || translation === ''}
-          endIcon={<ThumbUp />}
-          onClick={() => handleSubmit(true)}
-          fullWidth
-        >
-          Good translation
-        </Button>
-        <Button
-          disabled={rated || translation === ''}
-          variant={rating === 2 ? "contained" : "outlined"}
-          endIcon={<ThumbDown />}
-          onClick={() => setShowDialog(true)}
-          fullWidth
-        >
-          Bad translation
-        </Button>
-      </div>
-      {showAlert && <Alert severity="success">Thanks for the feedback</Alert>}
+    <div className="p-2 max-w-xl mx-auto">
+      <p className="text-center mb-4">Please help us improve the translation quality with your feedback.</p>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Button
+            variant={rating === 1 ? "contained" : "outlined"}
+            disabled={rated || translation === ''}
+            endIcon={<ThumbUp />}
+            onClick={() => handleSubmit(true)}
+            fullWidth
+          >
+            Good translation
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            disabled={rated || translation === ''}
+            variant={rating === 2 ? "contained" : "outlined"}
+            endIcon={<ThumbDown />}
+            onClick={() => setShowDialog(true)}
+            fullWidth
+          >
+            Bad translation
+          </Button>
+        </Grid>
+      </Grid>
+      {showAlert && <Alert className="mt-4" severity="success">Thanks for the feedback</Alert>}
       {showDialog && (
         <div className="flex flex-col gap-4 mt-4">
           <TextField

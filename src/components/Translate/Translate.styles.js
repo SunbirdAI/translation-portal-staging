@@ -2,13 +2,20 @@ import tw, { styled } from "twin.macro";
 
 export const MainContainer = styled.div`
   ${tw`
+    h-full
     grid
     grid-cols-1
+    sm:grid-cols-1
     md:grid-cols-2
-    gap-4
+    lg:grid-cols-2
+    xl:grid-cols-2
+    gap-3
     rounded-md
-    m-3
-    p-3
+    m-1
+    p-1
+    transition-all
+    duration-300
+    ease-in-out
   `}
   @media (min-width: 768px) {
     ${tw`p-6`}
@@ -16,14 +23,17 @@ export const MainContainer = styled.div`
   @media (min-width: 1024px) {
     ${tw`p-8`}
   }
+  @media (min-width: 1280px) {
+    ${tw`p-8`}
+  }
 `;
 
 export const Note = styled.div`
   ${tw`
     flex
+    p-1
     w-full
     items-center
-    p-6
     bg-gray-100 shadow
     text-gray-700
     rounded-md
@@ -45,4 +55,3 @@ export const CloseButton = styled.button`
     text-lg
   `}
 `;
-

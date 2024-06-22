@@ -3,14 +3,16 @@ import tw, { styled } from 'twin.macro';
 export const TextArea = styled.textarea`
   ${tw`
     w-full
-    h-60 md:h-80
+    h-full
     p-3
-    text-2xl md:text-4xl
+    text-2xl
+    md:text-4xl
     text-gray-700
     rounded
     transition
     placeholder:text-4xl
     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+    z-10
   `}
 `;
 
@@ -34,6 +36,7 @@ export const LanguageDropdown = styled.select`
     focus:ring-2
     focus:ring-blue-500
     focus:ring-opacity-50
+    z-10
   `}
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   &:hover {
@@ -55,7 +58,6 @@ export const DropdownOption = styled.option`
   `}
 `;
 
-
 export const CharCount = styled.div`
   ${tw`
     text-right
@@ -63,15 +65,30 @@ export const CharCount = styled.div`
     text-gray-500
     mt-1
     mr-3
+    z-10
   `}
 `;
 
 export const ResponsiveContainer = styled.div`
-${tw`p-4 bg-white shadow-md rounded-lg`}
-${props => props.disabled && tw`bg-gray-100`}
-${tw`
-  md:p-6
-  lg:p-8
-`}
+  ${tw`
+    p-4
+    bg-white
+    shadow-md
+    rounded-lg
+    relative
+    z-0
+    w-full
+    flex
+    flex-col
+    justify-between
+  `}
+  ${props => props.disabled && tw`bg-gray-100`}
+  height: 80vh; /* Example: Set the height to 80% of the viewport height */
+  min-height: 600px; /* Example: Set a minimum height */
 `;
 
+export const ButtonContainer = styled.div`
+  ${tw`
+    mb-2
+  `}
+`;
