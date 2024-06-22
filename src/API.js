@@ -4,7 +4,7 @@ const FEEDBACK_URL = process.env.REACT_APP_FEEDBACK_URL;
 const HUGGING_FACE_API_KEY = process.env.REACT_APP_HUGGING_FACE_API_KEY;
 export const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
 
-const languageIdUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/language_id`;
+const languageIdUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/classify_language`;
 const translationUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/nllb_translate`;
 const textToSpeechUrl = "https://api-inference.huggingface.co/models/Sunbird/sunbird-lug-tts";
 
@@ -32,7 +32,7 @@ export const languageId = async (text) => {
         return detectedLanguage;
     } catch (err) {
         console.error(err);
-        return "Language Identification error";
+        return "language not detected";
     }
 };
 
@@ -61,7 +61,7 @@ export const getTranslation = async (text, sourceLang, targetLang) => {
         return translatedText;
     } catch (err) {
         console.error(err);
-        return "Translation error";
+        return "Try again";
     }
 };
 

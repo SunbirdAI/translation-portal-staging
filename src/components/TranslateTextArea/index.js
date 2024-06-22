@@ -1,4 +1,4 @@
-import { LanguageDropdown, DropdownOption, TextArea, ResponsiveContainer, CharCount } from "./TranslateTextArea.styles";
+import { LanguageDropdown, DropdownOption, TextArea, ResponsiveContainer, CharCount, ButtonContainer } from "./TranslateTextArea.styles";
 import { Button, LinearProgress, Snackbar } from "@mui/material";
 import Feedback from "../Feedback";
 import { VolumeUp, ContentCopy } from "@mui/icons-material";
@@ -11,7 +11,8 @@ const languageNames = {
     ach: 'Acholi',
     teo: 'Ateso',
     lgg: 'Lugbara',
-    nyn: 'Runyankole'
+    nyn: 'Runyankole',
+    l_n_d: 'language not detected'
 };
 
 const MAX_CHAR_COUNT = 5000;
@@ -28,7 +29,6 @@ const TranslateTextArea = ({
     sourceLanguage,
     targetLanguage,
     isLoading,
-    handleTextToSpeech,
     detectedLanguage,
     setAutoDetected,
     autoDetected,
@@ -46,8 +46,10 @@ const TranslateTextArea = ({
             setSourceLanguage(event.target.value);
             if (event.target.value === 'auto-detection') {
                 setAutoDetected(true)
+                console.log("Auto detect on")
             } else {
                 setAutoDetected(false)
+                console.log("auto detect off")
             }
             console.log(event.target.value)
         } else setTargetLanguage(event.target.value);
@@ -105,7 +107,7 @@ const TranslateTextArea = ({
 
             {isLoading && disabled && <LinearProgress color="secondary" />}
 
-            {!isLoading && targetLanguage === "lug" && (
+            {/* {!isLoading && targetLanguage === "lug" && (
                 <Button
                     disabled={translation === ''}
                     endIcon={<VolumeUp />}
@@ -114,27 +116,28 @@ const TranslateTextArea = ({
                 >
                     <span className="italic text-xs">(BETA)</span>
                 </Button>
-            )}
+            )} */}
 
             {disabled && (
-                <Button
-                    onClick={copyToClipboard}
-                    disabled={!translation}
-                    endIcon={<ContentCopy />}
-                    size="small"
-                    className="mt-2 ml-auto"
-                >
-                    Copy
-                </Button>
-            )}
+                <>
+                    <ButtonContainer>
+                        <Button
+                            onClick={copyToClipboard}
+                            disabled={!translation}
+                            endIcon={<ContentCopy />}
+                            size="small"
+                        >
+                            Copy
+                        </Button>
+                    </ButtonContainer>
 
-            {disabled && (
-                <Feedback
-                    sourceText={text}
-                    translation={translation}
-                    from={sourceLanguage}
-                    to={targetLanguage}
-                />
+                    <Feedback
+                        sourceText={text}
+                        translation={translation}
+                        from={sourceLanguage}
+                        to={targetLanguage}
+                    />
+                </>
             )}
 
             <Snackbar

@@ -1,9 +1,9 @@
 import { MainContainer, Note, CloseButton } from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
-import SamplePhrases from "../SamplePhrases";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { debounce } from 'lodash';
-import { languageId, translateSB, sendFeedback, textToSpeech } from "../../API";
+import { languageId, translateSB, sendFeedback } from "../../API";
+import SamplePhrases from "../SamplePhrases";
 
 const localLangOptions = [
     { label: 'English', value: 'eng' },
@@ -16,20 +16,17 @@ const localLangOptions = [
 
 const autoOption = [{ label: 'Auto detection', value: 'auto-detection' }];
 const sourceOptions = [...autoOption, ...localLangOptions];
-// const getTargetOptions = () => localLangOptions;
 
-const getTargetOptions = (sourceLanguage) => {
-    // Filter out the selected source language from all available options
-    return localLangOptions.filter(option => option.value !== sourceLanguage);
-};
+const getTargetOptions = (sourceLanguage) => localLangOptions.filter(option => option.value !== sourceLanguage);
 
 const Translate = () => {
-    const [sourceLanguage, setSourceLanguage] = useState(' ');
+    const [sourceLanguage, setSourceLanguage] = useState('auto-detection');
     const [targetLanguage, setTargetLanguage] = useState(localLangOptions[1].value);
     const [sourceText, setSourceText] = useState('');
     const [translation, setTranslation] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [detectedLanguage, setDetectedLanguage] = useState('');
+    const [language, setLanguage] = useState('');
     const [autoDetected, setAutoDetected] = useState(true);
     const [charCountLimit, setCharCountLimit] = useState(true);
     const [showNote, setShowNote] = useState(true);
@@ -43,52 +40,47 @@ const Translate = () => {
         };
     }, []);
 
-    const handleTextToSpeech = async () => {
-        setIsLoading(true);
-        try {
-            await textToSpeech(translation);
-        } catch (e) {
-            console.error(e);
-        }
-        if (isComponentMounted.current) {
-            setIsLoading(false);
-        }
-    };
-
     const detectLanguage = useCallback(debounce(async (text) => {
         if (text === '') {
-            setSourceLanguage(' ');
+            setSourceLanguage('auto-detection');
             return;
         }
         try {
-            const detectedLanguage = await languageId(text.substring(0,18));
-            if (isComponentMounted.current) {
-                if(autoDetected){
-                    setDetectedLanguage(detectedLanguage);
-                    setSourceLanguage(detectedLanguage);
-                }
-                if (detectedLanguage === targetLanguage) {
-                    setTranslation("Detected language is the same as the target language.")
-                    console.error("Detected language is the same as the target language.");
+            if (autoDetected) {
+                const detectedLanguage = await languageId(text.substring(0, 18));
+                if (isComponentMounted.current) {
+                    if (detectedLanguage === "language not detected") {
+                        setLanguage("l_n_d");
+                        setSourceLanguage('auto-detection');
+                    } else {
+                        setDetectedLanguage(detectedLanguage);
+                        setLanguage(detectedLanguage);
+                        setSourceLanguage(detectedLanguage);
+
+                        if (detectedLanguage === targetLanguage) {
+                            setTranslation("Detected language is the same as the target language.");
+                            console.error("Detected language is the same as the target language.");
+                        }
+                    }
                 }
             }
         } catch (e) {
             console.error(e);
         }
-    }, 1000), [targetLanguage]);
+    }, 1000), [autoDetected, targetLanguage]);
 
     useEffect(() => {
         detectLanguage(sourceText);
     }, [sourceText, detectLanguage]);
 
-    const translate = useCallback(async (source) => {
-        if (source === '') {
+    const translate = useCallback(async (sourceText) => {
+        if (sourceLanguage === 'auto-detection') {
             setTranslation('');
             setIsLoading(false);
             return;
         }
         try {
-            const result = await translateSB(source, sourceLanguage, targetLanguage);
+            const result = await translateSB(sourceText, sourceLanguage, targetLanguage);
             if (isComponentMounted.current) {
                 setTranslation(result);
             }
@@ -108,11 +100,15 @@ const Translate = () => {
             isMounted.current = true;
             return;
         }
-        if (prevTarget.current !== targetLanguage) setTranslation('');
+        if (prevTarget.current !== targetLanguage) {
+            setTranslation('');
+        }
         setIsLoading(true);
         prevTarget.current = targetLanguage;
-        const timeOutId = setTimeout(() => translate(sourceText), 5000);
+
+        const timeOutId = setTimeout(() => translate(sourceText), 500);
         sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
+
         return () => clearTimeout(timeOutId);
     }, [sourceText, targetLanguage, sourceLanguage, translate, translation]);
 
@@ -120,7 +116,7 @@ const Translate = () => {
         <div>
             {showNote && (
                 <Note>
-                    <>Note:</> Our auto language detection currently supports the following languages: English, Luganda, Acholi, Ateso, Lugbara, and Runyankole.
+                    Note: Our auto language detection currently supports the following languages: English, Luganda, Acholi, Ateso, Lugbara, and Runyankole.
                     We are actively working on improving this feature and adding support for more languages in the future.
                     <CloseButton onClick={() => setShowNote(false)}>✖</CloseButton>
                 </Note>
@@ -132,7 +128,7 @@ const Translate = () => {
                     setSourceLanguage={setSourceLanguage}
                     text={sourceText}
                     setText={setSourceText}
-                    detectedLanguage={detectedLanguage}
+                    detectedLanguage={language}
                     setAutoDetected={setAutoDetected}
                     autoDetected={autoDetected}
                     charCountLimit={charCountLimit}
@@ -147,7 +143,6 @@ const Translate = () => {
                     sourceLanguage={sourceLanguage}
                     targetLanguage={targetLanguage}
                     isLoading={isLoading}
-                    handleTextToSpeech={handleTextToSpeech}
                     showCopyButton={true}
                 />
                 <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText} />
