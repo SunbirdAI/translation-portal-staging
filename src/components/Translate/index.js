@@ -1,4 +1,4 @@
-import { MainContainer, Note, CloseButton } from "./Translate.styles";
+import { MainContainer, Note, CloseButton, SplitContainer } from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { debounce } from 'lodash';
@@ -20,7 +20,7 @@ const sourceOptions = [...autoOption, ...localLangOptions];
 const getTargetOptions = (sourceLanguage) => localLangOptions.filter(option => option.value !== sourceLanguage);
 
 const Translate = () => {
-    const [sourceLanguage, setSourceLanguage] = useState('auto-detection');
+    const [sourceLanguage, setSourceLanguage] = useState(autoOption[0].value);
     const [targetLanguage, setTargetLanguage] = useState(localLangOptions[1].value);
     const [sourceText, setSourceText] = useState('');
     const [translation, setTranslation] = useState('');
@@ -80,6 +80,7 @@ const Translate = () => {
             return;
         }
         try {
+            setIsLoading(true);
             const result = await translateSB(sourceText, sourceLanguage, targetLanguage);
             if (isComponentMounted.current) {
                 setTranslation(result);
@@ -112,6 +113,14 @@ const Translate = () => {
         return () => clearTimeout(timeOutId);
     }, [sourceText, targetLanguage, sourceLanguage, translate, translation]);
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+          setShowNote(false);
+        }, 9999); // Hide the note after 10 seconds
+    
+        return () => clearTimeout(timer);
+      }, []);
+
     return (
         <div>
             {showNote && (
@@ -122,29 +131,31 @@ const Translate = () => {
                 </Note>
             )}
             <MainContainer>
-                <TranslateTextArea
-                    placeholder="Enter text"
-                    dropDownOptions={sourceOptions}
-                    setSourceLanguage={setSourceLanguage}
-                    text={sourceText}
-                    setText={setSourceText}
-                    detectedLanguage={language}
-                    setAutoDetected={setAutoDetected}
-                    autoDetected={autoDetected}
-                    charCountLimit={charCountLimit}
-                />
-                <TranslateTextArea
-                    placeholder="Translation"
-                    disabled={true}
-                    dropDownOptions={getTargetOptions(sourceLanguage)}
-                    setTargetLanguage={setTargetLanguage}
-                    translation={translation}
-                    text={sourceText}
-                    sourceLanguage={sourceLanguage}
-                    targetLanguage={targetLanguage}
-                    isLoading={isLoading}
-                    showCopyButton={true}
-                />
+                <SplitContainer>
+                    <TranslateTextArea
+                        placeholder="Enter text"
+                        dropDownOptions={sourceOptions}
+                        setSourceLanguage={setSourceLanguage}
+                        text={sourceText}
+                        setText={setSourceText}
+                        detectedLanguage={language}
+                        setAutoDetected={setAutoDetected}
+                        autoDetected={autoDetected}
+                        charCountLimit={charCountLimit}
+                    />
+                    <TranslateTextArea
+                        placeholder="Translation"
+                        disabled={true}
+                        dropDownOptions={getTargetOptions(sourceLanguage)}
+                        setTargetLanguage={setTargetLanguage}
+                        translation={translation}
+                        text={sourceText}
+                        sourceLanguage={sourceLanguage}
+                        targetLanguage={targetLanguage}
+                        isLoading={isLoading}
+                        showCopyButton={true}
+                    />
+                </SplitContainer>
                 <SamplePhrases sourceLanguage={sourceLanguage} setSamplePhrase={setSourceText} />
             </MainContainer>
         </div>
@@ -152,3 +163,4 @@ const Translate = () => {
 };
 
 export default Translate;
+

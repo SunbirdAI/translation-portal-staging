@@ -58,6 +58,7 @@ export const getTranslation = async (text, sourceLang, targetLang) => {
         }
 
         const translatedText = responseJson.output.translated_text;
+        console.log(`translatedText ${translatedText}`);
         return translatedText;
     } catch (err) {
         console.error(err);

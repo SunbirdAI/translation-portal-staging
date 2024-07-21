@@ -3,16 +3,10 @@ import tw, { styled } from "twin.macro";
 export const MainContainer = styled.div`
   ${tw`
     h-full
-    grid
-    grid-cols-1
-    sm:grid-cols-1
-    md:grid-cols-2
-    lg:grid-cols-2
-    xl:grid-cols-2
-    gap-3
-    rounded-md
-    m-1
-    p-1
+    flex
+    flex-col
+    items-center
+    p-4
     transition-all
     duration-300
     ease-in-out
@@ -21,7 +15,7 @@ export const MainContainer = styled.div`
     ${tw`p-6`}
   }
   @media (min-width: 1024px) {
-    ${tw`p-8`}
+    ${tw`p-2`}
   }
   @media (min-width: 1280px) {
     ${tw`p-8`}
@@ -53,5 +47,15 @@ export const CloseButton = styled.button`
     text-yellow-800
     cursor-pointer
     text-lg
+  `}
+`;
+
+export const SplitContainer = styled.div`
+  ${tw`
+    w-full
+    flex
+    flex-col
+    lg:flex-row
+    gap-4
   `}
 `;
