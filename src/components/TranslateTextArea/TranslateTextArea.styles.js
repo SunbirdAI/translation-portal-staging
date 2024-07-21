@@ -1,94 +1,45 @@
-import tw, { styled } from 'twin.macro';
+import styled from 'styled-components';
+import { Select, MenuItem, TextareaAutosize } from "@mui/material";
 
-export const TextArea = styled.textarea`
-  ${tw`
-    w-full
-    h-full
-    p-3
-    text-2xl
-    md:text-4xl
-    text-gray-700
-    rounded
-    transition
-    placeholder:text-4xl
-    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
-    z-10
-  `}
+export const LanguageDropdown = styled(Select)`
+    width: 120px;
+    margin-right: 13px;
 `;
 
-export const LanguageDropdown = styled.select`
-  ${tw`
-    w-full
-    px-3
-    py-2
-    mx-1.5
-    my-2
-    max-w-[250px]
-    border border-gray-300
-    rounded-lg
-    bg-white
-    text-gray-700
-    transition
-    duration-200
-    ease-in-out
-    outline-none
-    focus:border-blue-600
-    focus:ring-2
-    focus:ring-blue-500
-    focus:ring-opacity-50
-    z-10
-  `}
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  &:hover {
-    border-color: #a0aec0;
-  }
-  &::placeholder {
-    ${tw`
-      text-gray-500
-    `}
-  }
+export const DropdownOption = styled(MenuItem)`
+    font-size: 14px;
 `;
 
-export const DropdownOption = styled.option`
-  ${tw`
-    text-base
-    text-gray-700
-    bg-white
-    hover:bg-blue-100
-  `}
+export const TextArea = styled(TextareaAutosize)`
+    width: 100%;
+    min-height: 150px;
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    font-size: 16px;
+    resize: none;
+    &:disabled {
+        background-color: #f9f9f9;
+    }
 `;
 
 export const CharCount = styled.div`
-  ${tw`
-    text-right
-    text-xs
-    text-gray-500
-    mt-1
-    mr-3
-    z-10
-  `}
-`;
-
-export const ResponsiveContainer = styled.div`
-  ${tw`
-    p-4
-    bg-white
-    shadow-md
-    rounded-lg
-    relative
-    z-0
-    w-full
-    flex
-    flex-col
-    justify-between
-  `}
-  ${props => props.disabled && tw`bg-gray-100`}
-  height: 80vh; /* Example: Set the height to 80% of the viewport height */
-  min-height: 600px; /* Example: Set a minimum height */
+    align-self: flex-end;
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
 `;
 
 export const ButtonContainer = styled.div`
-  ${tw`
-    mb-2
-  `}
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+`;
+
+export const OverlayContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
 `;

@@ -2,6 +2,8 @@ import tw, {styled} from "twin.macro";
 
 export const SamplePhrasesAccordion = styled.div`
   ${tw`
+    w-full
+    p-3
     md:col-span-2
    `}
 `;
