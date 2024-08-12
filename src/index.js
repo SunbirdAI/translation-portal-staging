@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Hotjar from '@hotjar/browser';
 
-const siteId = 5049753;
+const siteId = 5091520;
 const hotjarVersion = 6;
 
 Hotjar.init(siteId, hotjarVersion);
