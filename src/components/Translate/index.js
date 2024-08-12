@@ -59,7 +59,6 @@ const Translate = () => {
 
                         if (detectedLanguage === targetLanguage) {
                             setTranslation("Detected language is the same as the target language.");
-                            console.error("Detected language is the same as the target language.");
                         }
                     }
                 }
@@ -77,10 +76,12 @@ const Translate = () => {
         if (sourceLanguage === 'auto-detection') {
             setTranslation('');
             setIsLoading(false);
+            console.log("loading is false")
             return;
         }
         try {
             setIsLoading(true);
+            console.log("loading is true")
             const result = await translateSB(sourceText, sourceLanguage, targetLanguage);
             if (isComponentMounted.current) {
                 setTranslation(result);
@@ -93,6 +94,7 @@ const Translate = () => {
         }
         if (isComponentMounted.current) {
             setIsLoading(false);
+            console.log("loading is false")
         }
     }, [sourceLanguage, targetLanguage]);
 
@@ -105,21 +107,20 @@ const Translate = () => {
             setTranslation('');
         }
         setIsLoading(true);
+        console.log("loading is true")
         prevTarget.current = targetLanguage;
 
         const timeOutId = setTimeout(() => translate(sourceText), 500);
-        sendFeedback(' ', sourceText, translation, sourceLanguage, targetLanguage);
-
         return () => clearTimeout(timeOutId);
-    }, [sourceText, targetLanguage, sourceLanguage, translate, translation]);
+    }, [sourceText, targetLanguage, sourceLanguage, translate]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
-          setShowNote(false);
+            setShowNote(false);
         }, 9999); // Hide the note after 10 seconds
-    
+
         return () => clearTimeout(timer);
-      }, []);
+    }, []);
 
     return (
         <div>
@@ -163,4 +164,3 @@ const Translate = () => {
 };
 
 export default Translate;
-

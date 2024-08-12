@@ -1,8 +1,9 @@
 import { LanguageDropdown, DropdownOption, TextArea, CharCount, ButtonContainer, OverlayContainer } from "./TranslateTextArea.styles";
-import { Button, LinearProgress, Snackbar, IconButton, Tooltip, Modal, Box } from "@mui/material";
+import { Button, Snackbar, IconButton, Tooltip, Modal, Box } from "@mui/material";
+import Stack from '@mui/material/Stack';
+import LinearProgress from '@mui/material/LinearProgress';
 import Feedback from "../Feedback";
-// import Typewriter from "typewriter-effect";
-import Typewriter from "../Typewriter";
+// import Typewriter from "../Typewriter";
 import { ContentCopy, Feedback as FeedbackIcon } from "@mui/icons-material";
 import React, { useState, useEffect } from 'react';
 
@@ -38,13 +39,13 @@ const TranslateTextArea = ({
     const [copySuccess, setCopySuccess] = useState(false);
     const [charCount, setCharCount] = useState(0);
     const [feedbackOpen, setFeedbackOpen] = useState(false);
-    const [typewriterText, setTypewriterText] = useState('');
+    // const [typewriterText, setTypewriterText] = useState('');
 
-    useEffect(() => {
-        if (disabled && translation !== null) {
-            setTypewriterText(''); // Reset typewriter text
-        }
-    }, [disabled, translation]);
+    // useEffect(() => {
+    //     if (disabled && translation !== null) {
+    //         setTypewriterText(''); // Reset typewriter text
+    //     }
+    // }, [disabled, translation]);
 
     useEffect(() => {
         setCharCount(text.length);
@@ -53,14 +54,7 @@ const TranslateTextArea = ({
     const onLanguageChange = (event) => {
         if (!disabled) {
             setSourceLanguage(event.target.value);
-            if (event.target.value === 'auto-detection') {
-                setAutoDetected(true);
-                console.log("Auto detect on");
-            } else {
-                setAutoDetected(false);
-                console.log("Auto detect off");
-            }
-            console.log(event.target.value);
+            setAutoDetected(event.target.value === 'auto-detection');
         } else {
             setTargetLanguage(event.target.value);
         }
@@ -131,35 +125,10 @@ const TranslateTextArea = ({
                 </small>
             )}
 
-            {/* {disabled && translation !== null ? (
-                <Typewriter
-                    text={translation}
-                    delay={100}
-                    infinite={false}
-                    onUpdate={setTypewriterText}
-                />
-            ) :
-                <TextArea
-                    placeholder={placeholder}
-                    disabled={disabled}
-                    readOnly={disabled}
-                    value={disabled ? typewriterText : text}
-                    onChange={onTextChange}
-                    rows={disabled ? undefined : '5'}
-                />}
-            <Typewriter text={"translation"} delay={100} /> */}
-            {/* <div className="App">
-                <Typewriter
-                    onInit={(typewriter) => {
-                        typewriter
-                            .typeString(disabled ? <Typewriter text={translation} delay={100} infinite /> : text)
-                            .pauseFor(1000)
-                            .deleteAll()
-                            .typeString("Welcomes You")
-                            .start();
-                    }}
-                />
-            </div> */}
+            {isLoading && <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={2}>
+                <LinearProgress color="success" />
+            </Stack>}
+
             <TextArea
                 placeholder={placeholder}
                 disabled={disabled}
@@ -174,8 +143,6 @@ const TranslateTextArea = ({
                     {charCount}/{MAX_CHAR_COUNT} characters
                 </CharCount>
             )}
-
-            {isLoading && disabled && <LinearProgress color="secondary" />}
 
             <Snackbar
                 open={copySuccess}
