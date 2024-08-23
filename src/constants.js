@@ -99,7 +99,7 @@ export const samplePhraseDict = {
             "E'yo anzi ode eyini fe eyini ani sukulu kuzu ja 'diyi e'yo ngo eyi?"
         ]]
     ],
-    "auto-detection": [
+    "auto": [
         ["English",[
             'How are you?',
             'When can we meet and have a chat?',
