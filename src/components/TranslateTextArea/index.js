@@ -97,7 +97,7 @@ const TranslateTextArea = ({
         <div className="relative p-4 bg-white shadow-md rounded-lg w-full flex flex-col items-start">
             <OverlayContainer>
                 <div className="flex items-center w-full">
-                    <LanguageDropdown defaultValue="auto-detection" onChange={onLanguageChange} value={disabled ? targetLanguage : sourceLanguage}>
+                    <LanguageDropdown defaultValue="auto" onChange={onLanguageChange} value={disabled ? targetLanguage : sourceLanguage}>
                         {dropDownOptions.map((option, index) => (
                             <DropdownOption key={index} value={option.value}>
                                 {option.label}
