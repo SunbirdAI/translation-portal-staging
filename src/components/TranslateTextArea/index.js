@@ -40,27 +40,15 @@ const TranslateTextArea = ({
     const [copySuccess, setCopySuccess] = useState(false);
     const [charCount, setCharCount] = useState(0);
     const [feedbackOpen, setFeedbackOpen] = useState(false);
-    // const [typewriterText, setTypewriterText] = useState('');
-
-    // useEffect(() => {
-    //     if (disabled && translation !== null) {
-    //         setTypewriterText(''); // Reset typewriter text
-    //     }
-    // }, [disabled, translation]);
 
     useEffect(() => {
         setCharCount(text.length);
     }, [text]);
-
-    const debouncedLanguageChange = useCallback(debounce((newLanguage) => {
-        setSourceLanguage(newLanguage);
-    }, 300), []);
     
     const onLanguageChange = (event) => {
         if (!disabled) {
             const selectedLanguage = event.target.value;
             console.log(`sourceLang set ${selectedLanguage}`);
-            // debouncedLanguageChange(selectedLanguage);
             setSourceLanguage(selectedLanguage);
             setAutoDetected(selectedLanguage === 'auto');
         } else {
