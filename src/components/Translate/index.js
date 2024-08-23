@@ -14,7 +14,7 @@ const localLangOptions = [
     { label: 'Runyankole', value: 'nyn' }
 ];
 
-const autoOption = [{ label: 'Auto detection', value: 'auto-detection' }];
+const autoOption = [{ label: 'Auto detection', value: 'auto' }];
 const sourceOptions = [...autoOption, ...localLangOptions];
 
 const getTargetOptions = (sourceLanguage) => localLangOptions.filter(option => option.value !== sourceLanguage);
@@ -40,9 +40,16 @@ const Translate = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (sourceLanguage === targetLanguage) {
+            const newTargetLanguage = getTargetOptions(sourceLanguage)[0]?.value || localLangOptions[0].value;
+            setTargetLanguage(newTargetLanguage);
+        }
+    }, [sourceLanguage]);
+
     const detectLanguage = useCallback(debounce(async (text) => {
         if (text === '') {
-            setSourceLanguage('auto-detection');
+            // setSourceLanguage('auto');
             return;
         }
         try {
@@ -50,8 +57,8 @@ const Translate = () => {
                 const detectedLanguage = await languageId(text.substring(0, 18));
                 if (isComponentMounted.current) {
                     if (detectedLanguage === "language not detected") {
-                        setLanguage("l_n_d");
-                        setSourceLanguage('auto-detection');
+                        setLanguage("auto");
+                        setSourceLanguage('auto');
                     } else {
                         setDetectedLanguage(detectedLanguage);
                         setLanguage(detectedLanguage);
@@ -73,18 +80,20 @@ const Translate = () => {
     }, [sourceText, detectLanguage]);
 
     const translate = useCallback(async (sourceText) => {
-        if (sourceLanguage === 'auto-detection') {
-            setTranslation('');
-            setIsLoading(false);
-            console.log("loading is false")
-            return;
-        }
         try {
-            setIsLoading(true);
-            console.log("loading is true")
-            const result = await translateSB(sourceText, sourceLanguage, targetLanguage);
-            if (isComponentMounted.current) {
-                setTranslation(result);
+            if (sourceLanguage === 'auto') {
+                setTranslation('');
+                setIsLoading(false);
+                console.log("loading is false")
+                // return;
+            }else{
+                setIsLoading(true);
+                console.log("loading is true")
+                const result = await translateSB(sourceText, sourceLanguage, targetLanguage);
+                if (isComponentMounted.current) {
+                    setTranslation(result);
+                    setIsLoading(false);
+                }
             }
         } catch (e) {
             if (isComponentMounted.current) {
@@ -106,8 +115,8 @@ const Translate = () => {
         if (prevTarget.current !== targetLanguage) {
             setTranslation('');
         }
-        setIsLoading(true);
-        console.log("loading is true")
+        // setIsLoading(true);
+        // console.log("loading is true")
         prevTarget.current = targetLanguage;
 
         const timeOutId = setTimeout(() => translate(sourceText), 500);

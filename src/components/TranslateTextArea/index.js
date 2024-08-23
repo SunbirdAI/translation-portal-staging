@@ -5,7 +5,8 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Feedback from "../Feedback";
 // import Typewriter from "../Typewriter";
 import { ContentCopy, Feedback as FeedbackIcon } from "@mui/icons-material";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { debounce } from 'lodash';
 
 const languageNames = {
     eng: 'English',
@@ -14,7 +15,7 @@ const languageNames = {
     teo: 'Ateso',
     lgg: 'Lugbara',
     nyn: 'Runyankole',
-    l_n_d: 'language not detected'
+    auto: 'language not detected'
 };
 
 const MAX_CHAR_COUNT = 5000;
@@ -51,14 +52,23 @@ const TranslateTextArea = ({
         setCharCount(text.length);
     }, [text]);
 
+    const debouncedLanguageChange = useCallback(debounce((newLanguage) => {
+        setSourceLanguage(newLanguage);
+    }, 300), []);
+    
     const onLanguageChange = (event) => {
         if (!disabled) {
-            setSourceLanguage(event.target.value);
-            setAutoDetected(event.target.value === 'auto-detection');
+            const selectedLanguage = event.target.value;
+            console.log(`sourceLang set ${selectedLanguage}`);
+            // debouncedLanguageChange(selectedLanguage);
+            setSourceLanguage(selectedLanguage);
+            setAutoDetected(selectedLanguage === 'auto');
         } else {
             setTargetLanguage(event.target.value);
         }
     };
+    
+
 
     const onTextChange = (event) => {
         const newText = event.target.value;
