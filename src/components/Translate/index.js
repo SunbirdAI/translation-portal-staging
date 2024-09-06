@@ -7,7 +7,7 @@ import {
 import TranslateTextArea from "../TranslateTextArea";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { languageId, translateSB, sendFeedback } from "../../API";
+import { languageId, translateSB } from "../../API";
 import SamplePhrases from "../SamplePhrases";
 
 const localLangOptions = [

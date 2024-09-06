@@ -19,9 +19,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Feedback from "../Feedback";
 import FeedbackImage from "../../images/feedback2.png";
 // import Typewriter from "../Typewriter";
-import { ContentCopy, Feedback as FeedbackIcon } from "@mui/icons-material";
-import React, { useState, useEffect, useCallback } from "react";
-import { debounce } from "lodash";
+import { ContentCopy } from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
 
 const languageNames = {
   eng: "English",
