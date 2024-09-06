@@ -21,13 +21,13 @@ jobs:
 
       - name: Build
         env:
-          REACT_APP_SB_API_URL: ${{ secrets.REACT_APP_API_URL }}
-          REACT_APP_SB_API_TOKEN: ${{ secrets.REACT_APP_API_TOKEN }}
+          REACT_APP_SB_API_URL: ${{ secrets.REACT_APP_SB_API_URL }}
+          REACT_APP_SB_API_TOKEN: ${{ secrets.REACT_APP_SB_API_TOKEN }}
           REACT_APP_GA4_TRACKING_ID: ${{ secrets.REACT_APP_GA4_TRACKING_ID }}
           REACT_APP_GA4_MEASUREMENT_ID: ${{ secrets.REACT_APP_GA4_MEASUREMENT_ID }}
-          REACT_APP_FEEDBACK_URL: $ {{ secrets.REACT_APP_FEEDBACK_URL }}
-
+          REACT_APP_FEEDBACK_URL: ${{ secrets.REACT_APP_FEEDBACK_URL }}
         run: CI=false npm run build
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
