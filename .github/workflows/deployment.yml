@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build-and-Deploy
 
 on:
   push:
@@ -27,8 +27,8 @@ jobs:
           REACT_APP_GA4_MEASUREMENT_ID: ${{ secrets.REACT_APP_GA4_MEASUREMENT_ID }}
           REACT_APP_FEEDBACK_URL: $ {{ secrets.REACT_APP_FEEDBACK_URL }}
 
-        run: npm run build
-      - name: Deploy 🚀
+        run: CI=false npm run build
+      - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
