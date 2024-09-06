@@ -3,6 +3,7 @@ import { Button, Snackbar, IconButton, Tooltip, Modal, Box } from "@mui/material
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
 import Feedback from "../Feedback";
+import FeedbackImage from '../../images/feedback2.png';
 // import Typewriter from "../Typewriter";
 import { ContentCopy, Feedback as FeedbackIcon } from "@mui/icons-material";
 import React, { useState, useEffect, useCallback } from 'react';
@@ -44,7 +45,7 @@ const TranslateTextArea = ({
     useEffect(() => {
         setCharCount(text.length);
     }, [text]);
-    
+
     const onLanguageChange = (event) => {
         if (!disabled) {
             const selectedLanguage = event.target.value;
@@ -55,7 +56,7 @@ const TranslateTextArea = ({
             setTargetLanguage(event.target.value);
         }
     };
-    
+
 
 
     const onTextChange = (event) => {
@@ -95,7 +96,7 @@ const TranslateTextArea = ({
                     {disabled && (
                         <Tooltip title="Provide Feedback">
                             <IconButton onClick={handleFeedbackOpen} sx={{ ml: 2 }}>
-                                <FeedbackIcon />
+                                <img src={FeedbackImage} alt="Feedback" style={{ width: 50, height: 50 }} />
                             </IconButton>
                         </Tooltip>
                     )}
