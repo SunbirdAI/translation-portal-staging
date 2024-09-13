@@ -101,9 +101,14 @@ const TranslateTextArea = ({
             defaultValue="auto"
             onChange={onLanguageChange}
             value={disabled ? targetLanguage : sourceLanguage}
+            data-testid="language-dropdown"
           >
             {dropDownOptions.map((option, index) => (
-              <DropdownOption key={index} value={option.value}>
+              <DropdownOption
+                data-testid="dropdown-option"
+                key={index}
+                value={option.value}
+              >
                 {option.label}
               </DropdownOption>
             ))}
@@ -138,14 +143,17 @@ const TranslateTextArea = ({
       </OverlayContainer>
 
       {autoDetected && detectedLanguage && (
-        <small className="italic text-xs text-blue-600">
+        <small
+          className="italic text-xs text-blue-600"
+          data-testid="detected-language"
+        >
           Detected : {languageNames[detectedLanguage]}
         </small>
       )}
 
       {isLoading && (
         <Stack sx={{ width: "100%", color: "grey.500" }} spacing={2}>
-          <LinearProgress color="success" />
+          <LinearProgress color="success" data-testid="loading-indicator" />
         </Stack>
       )}
 

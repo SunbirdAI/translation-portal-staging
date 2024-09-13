@@ -1,0 +1,31 @@
+[
+    {
+      "text": "ferh 454543923032rrejsqq",
+      "expectedLanguage": "language not detected"
+    },
+    {
+      "text": "Generate a recipe for burgers",
+      "expectedLanguage": "English"
+    },
+    {
+      "text": "Nkwagaliza amazalibwa go amalungi",
+      "expectedLanguage": "Luganda"
+    },
+    {
+      "text": "Laco eni colo jemi weng",
+      "expectedLanguage": "Acholi"
+    },
+    {
+      "text": "Kotoma ageunet abu Edeke kosub akuj ka akwap",
+      "expectedLanguage": "Ateso"
+    },
+    {
+      "text": "Naba ninkushaba onyambe",
+      "expectedLanguage": "Runyankole"
+    },
+    {
+      "text": "Ma mu Ariwara-a ngoni?",
+      "expectedLanguage": "Lugbara"
+    }
+  ]
+  
