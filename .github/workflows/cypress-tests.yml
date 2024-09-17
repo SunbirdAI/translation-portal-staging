@@ -1,5 +1,7 @@
 name: Run Cypress Tests
-on: push
+on:
+  workflow_call:
+
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
@@ -9,7 +11,7 @@ jobs:
       - run: npm i
 
       - name: Build app
-        run:  CI=false npm run build
+        run: CI=false npm run build
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
@@ -17,7 +19,6 @@ jobs:
 
         with:
           browser: chrome
-          
           start: npm start
           wait-on: "http://localhost:3000"
         env:
