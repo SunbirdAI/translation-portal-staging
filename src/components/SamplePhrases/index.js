@@ -41,7 +41,7 @@ const SamplePhrases = ({ sourceLanguage, setSamplePhrase }) => {
   };
 
   return (
-    <SamplePhrasesAccordion>
+    <SamplePhrasesAccordion data-testid="show-sample-phrases">
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <h2 className="font-bold text-xl">Sample Phrases</h2>
@@ -52,6 +52,7 @@ const SamplePhrases = ({ sourceLanguage, setSamplePhrase }) => {
             onChange={handleChange}
             variant="scrollable"
             scrollButtons="auto"
+            data-testid="sample-phrase-language"
           >
             {samplePhraseDict[sourceLanguage].map((section, index) => (
               <Tab key={index} label={section[0]} />

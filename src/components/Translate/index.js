@@ -160,12 +160,17 @@ const Translate = () => {
   return (
     <div>
       {showNote && (
-        <Note>
+        <Note data-testid="note">
           Note: Our auto language detection currently supports the following
           languages: English, Luganda, Acholi, Ateso, Lugbara, and Runyankole.
           We are actively working on improving this feature and adding support
           for more languages in the future.
-          <CloseButton onClick={() => setShowNote(false)}>✖</CloseButton>
+          <CloseButton
+            data-testid="close-note"
+            onClick={() => setShowNote(false)}
+          >
+            ✖
+          </CloseButton>
         </Note>
       )}
       <MainContainer>
@@ -180,6 +185,7 @@ const Translate = () => {
             setAutoDetected={setAutoDetected}
             autoDetected={autoDetected}
             charCountLimit={charCountLimit}
+            data-testid="source-language"
           />
           <TranslateTextArea
             placeholder="Translation"
@@ -192,6 +198,7 @@ const Translate = () => {
             targetLanguage={targetLanguage}
             isLoading={isLoading}
             showCopyButton={true}
+            data-testid="translation"
           />
         </SplitContainer>
         <SamplePhrases
