@@ -1,19 +1,17 @@
 name: Build-and-Deploy
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Run Cypress Tests"]
+    types:
+      - completed
 
 permissions:
   contents: write
 
 jobs:
-  test:
-    uses: ./.github/workflows/cypress-tests.yml
   build-deploy:
     runs-on: ubuntu-latest
-    needs: [test]
 
     steps:
       - name: Checkout

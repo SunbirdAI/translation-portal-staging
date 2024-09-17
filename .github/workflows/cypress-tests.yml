@@ -1,6 +1,8 @@
 name: Run Cypress Tests
 on:
-  workflow_call:
+  push:
+    branches:
+      - main
 
 jobs:
   cypress-run:
@@ -15,7 +17,7 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
-        timeout-minutes: 10
+        timeout-minutes: 5
 
         with:
           browser: chrome
