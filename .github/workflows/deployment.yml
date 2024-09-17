@@ -9,11 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  test:
-    uses: ./.github/workflows/cypress-tests.yml
   build-deploy:
     runs-on: ubuntu-latest
-    needs: [test]
 
     steps:
       - name: Checkout
@@ -30,6 +27,12 @@ jobs:
           REACT_APP_GA4_MEASUREMENT_ID: ${{ secrets.REACT_APP_GA4_MEASUREMENT_ID }}
           REACT_APP_FEEDBACK_URL: ${{ secrets.REACT_APP_FEEDBACK_URL }}
         run: CI=false npm run build
+
+      - name: Install Cypress
+        run: npm install cypress --save-dev
+
+      - name: Run Cypress tests
+        run: npm run cypress:run
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
