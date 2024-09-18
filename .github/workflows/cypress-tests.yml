@@ -1,0 +1,31 @@
+name: Run Cypress Tests
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - run: npm i
+
+      - name: Build app
+        run: CI=false npm run build
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        timeout-minutes: 5
+
+        with:
+          browser: chrome
+          start: npm start
+          wait-on: "http://localhost:3000"
+        env:
+          REACT_APP_SB_API_URL: ${{ secrets.REACT_APP_SB_API_URL }}
+          REACT_APP_SB_API_TOKEN: ${{ secrets.REACT_APP_SB_API_TOKEN }}
+          REACT_APP_GA4_TRACKING_ID: ${{ secrets.REACT_APP_GA4_TRACKING_ID }}
+          REACT_APP_GA4_MEASUREMENT_ID: ${{ secrets.REACT_APP_GA4_MEASUREMENT_ID }}
+          REACT_APP_FEEDBACK_URL: ${{ secrets.REACT_APP_FEEDBACK_URL }}
