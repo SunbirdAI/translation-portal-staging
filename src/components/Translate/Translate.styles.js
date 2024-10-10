@@ -56,6 +56,6 @@ export const SplitContainer = styled.div`
     flex
     flex-col
     lg:flex-row
-    gap-4
+    gap-8
   `}
 `;
