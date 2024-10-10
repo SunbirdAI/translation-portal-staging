@@ -2,22 +2,15 @@ import {
   LanguageDropdown,
   DropdownOption,
   TextArea,
-  CharCount,
+  TranslateFooter,
   ButtonContainer,
   OverlayContainer,
 } from "./TranslateTextArea.styles";
-import {
-  Button,
-  Snackbar,
-  IconButton,
-  Tooltip,
-  Modal,
-  Box,
-} from "@mui/material";
+import { Button, Snackbar, Tooltip, Modal, Box, Alert } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import Feedback from "../Feedback";
-import FeedbackImage from "../../images/feedback2.png";
+import FeedbackImage from "../../images/feedback.png";
 // import Typewriter from "../Typewriter";
 import { ContentCopy } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
@@ -54,6 +47,23 @@ const TranslateTextArea = ({
   const [copySuccess, setCopySuccess] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if (charCount >= MAX_CHAR_COUNT) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [charCount]);
 
   useEffect(() => {
     setCharCount(text.length);
@@ -75,7 +85,7 @@ const TranslateTextArea = ({
     if (charCountLimit && newText.length <= MAX_CHAR_COUNT) {
       setText(newText);
       setCharCount(newText.length);
-    } else {
+    } else if (!charCountLimit) {
       setText(newText);
     }
   };
@@ -94,7 +104,7 @@ const TranslateTextArea = ({
   const handleFeedbackClose = () => setFeedbackOpen(false);
 
   return (
-    <div className="relative p-4 bg-white shadow-md rounded-lg w-full flex flex-col items-start">
+    <div className="relative p-4 bg-white border rounded-md w-full flex flex-col items-start">
       <OverlayContainer>
         <div className="flex items-center w-full">
           <LanguageDropdown
@@ -113,33 +123,7 @@ const TranslateTextArea = ({
               </DropdownOption>
             ))}
           </LanguageDropdown>
-          {disabled && (
-            <Tooltip title="Provide Feedback">
-              <IconButton onClick={handleFeedbackOpen} sx={{ ml: 2 }}>
-                <img
-                  src={FeedbackImage}
-                  alt="Feedback"
-                  style={{ width: 50, height: 50 }}
-                />
-              </IconButton>
-            </Tooltip>
-          )}
         </div>
-
-        {disabled && (
-          <div className="flex items-center">
-            <ButtonContainer>
-              <Button
-                onClick={copyToClipboard}
-                disabled={!translation}
-                endIcon={<ContentCopy />}
-                size="small"
-              >
-                Copy
-              </Button>
-            </ButtonContainer>
-          </div>
-        )}
       </OverlayContainer>
 
       {autoDetected && detectedLanguage && (
@@ -164,20 +148,75 @@ const TranslateTextArea = ({
         value={disabled ? translation : text}
         onChange={onTextChange}
         rows={disabled ? undefined : "5"}
+        maxLength={text ? MAX_CHAR_COUNT : undefined}
       />
 
-      {charCountLimit && (
-        <CharCount>
-          {charCount}/{MAX_CHAR_COUNT} characters
-        </CharCount>
-      )}
+      <TranslateFooter>
+        {charCountLimit && (
+          <p
+            className={`${
+              disabled && "hidden"
+            } text-xs text-[#666] text-center`}
+          >
+            {charCount}/{MAX_CHAR_COUNT} characters
+          </p>
+        )}
+
+        {translation && (
+          <>
+            <Tooltip title="Provide Feedback" data-testid="feedback-button">
+              <button
+                onClick={handleFeedbackOpen}
+                //disabled={translation ? false : true}
+                className={`w-10 h-10 hover:opacity-50 disabled:opacity-50`}
+              >
+                <img
+                  src={FeedbackImage}
+                  alt="Feedback"
+                  //style={{ width: 40, height: 40 }}
+                />
+              </button>
+            </Tooltip>
+
+            <ButtonContainer data-testid="copy-container">
+              <Button
+                onClick={copyToClipboard}
+                disabled={!translation}
+                endIcon={<ContentCopy />}
+                size="small"
+              >
+                Copy
+              </Button>
+            </ButtonContainer>
+          </>
+        )}
+      </TranslateFooter>
 
       <Snackbar
         open={copySuccess}
         autoHideDuration={3000}
-        message="Translation copied!"
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      />
+      >
+        <Alert
+          severity="success"
+          // variant="filled"
+          sx={{ width: "100%" }}
+          //onClose={handleClose}
+        >
+          Translation copied!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          severity="info"
+          // variant="filled"
+          sx={{ width: "100%" }}
+          onClose={handleClose}
+        >
+          Your text has reached the 5,000 character limit.
+        </Alert>
+      </Snackbar>
 
       <Modal open={feedbackOpen} onClose={handleFeedbackClose}>
         <Box sx={modalStyle}>

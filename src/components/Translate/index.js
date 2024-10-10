@@ -33,7 +33,6 @@ const Translate = () => {
   const [sourceText, setSourceText] = useState("");
   const [translation, setTranslation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [detectedLanguage, setDetectedLanguage] = useState("");
   const [language, setLanguage] = useState("");
   const [autoDetected, setAutoDetected] = useState(true);
   const [charCountLimit, setCharCountLimit] = useState(true);
@@ -54,44 +53,40 @@ const Translate = () => {
         getTargetOptions(sourceLanguage)[0]?.value || localLangOptions[0].value;
       setTargetLanguage(newTargetLanguage);
     }
-  }, [sourceLanguage]);
+  }, [sourceLanguage, targetLanguage]);
 
-  const detectLanguage = useCallback(
-    debounce(async (text) => {
-      if (text === "") {
-        // setSourceLanguage('auto');
-        return;
-      }
-      try {
-        if (autoDetected) {
-          const detectedLanguage = await languageId(text.substring(0, 18));
-          if (isComponentMounted.current) {
-            if (detectedLanguage === "language not detected") {
-              setLanguage("auto");
-              setSourceLanguage("auto");
-            } else {
-              setDetectedLanguage(detectedLanguage);
-              setLanguage(detectedLanguage);
-              setSourceLanguage(detectedLanguage);
+  const debounceDetectLanguage = debounce(async (text) => {
+    if (text === "") {
+      // setSourceLanguage('auto');
+      return;
+    }
+    try {
+      if (autoDetected) {
+        const detectedLanguage = await languageId(text.substring(0, 18));
+        if (isComponentMounted.current) {
+          if (detectedLanguage === "language not detected") {
+            setLanguage("auto");
+            setSourceLanguage("auto");
+          } else {
+            setLanguage(detectedLanguage);
+            setSourceLanguage(detectedLanguage);
 
-              if (detectedLanguage === targetLanguage) {
-                setTranslation(
-                  "Detected language is the same as the target language."
-                );
-              }
+            if (detectedLanguage === targetLanguage) {
+              setTranslation(
+                "Detected language is the same as the target language."
+              );
             }
           }
         }
-      } catch (e) {
-        console.error(e);
       }
-    }, 1000),
-    [autoDetected, targetLanguage]
-  );
+    } catch (e) {
+      console.error(e);
+    }
+  }, 1000);
 
   useEffect(() => {
-    detectLanguage(sourceText);
-  }, [sourceText, detectLanguage]);
+    debounceDetectLanguage(sourceText);
+  }, [sourceText, debounceDetectLanguage]);
 
   const translate = useCallback(
     async (sourceText) => {
@@ -121,6 +116,7 @@ const Translate = () => {
         }
       } catch (e) {
         if (isComponentMounted.current) {
+          setCharCountLimit(true);
           setTranslation("");
         }
         console.error(e);
@@ -158,7 +154,7 @@ const Translate = () => {
   }, []);
 
   return (
-    <div>
+    <div className="h-fit">
       {showNote && (
         <Note data-testid="note">
           Note: Our auto language detection currently supports the following

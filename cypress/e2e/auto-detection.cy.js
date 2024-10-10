@@ -11,8 +11,7 @@ describe("Auto Detection of Language", () => {
       testCases.forEach(({ text, expectedLanguage }) => {
         // Step 1: Enter text into the textarea
         cy.get('textarea[placeholder="Enter text"]').clear().type(text);
-
-        cy.wait(3000);
+        cy.wait(4000)
         // Step 2: Verify the detected language
         cy.get('[data-testid="detected-language"]')
           .invoke("text")
