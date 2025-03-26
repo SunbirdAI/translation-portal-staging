@@ -1,3 +1,4 @@
+import React,{ useState } from "react";
 import {
   PhraseList,
   PhraseListItem,
@@ -6,7 +7,6 @@ import {
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { Tabs, Tab } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useState } from "react";
 import { samplePhraseDict } from "../../constants";
 
 const WordList = ({ sentences, setSamplePhrase }) => {

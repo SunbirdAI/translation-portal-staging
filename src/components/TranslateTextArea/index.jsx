@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   LanguageDropdown,
   DropdownOption,
@@ -13,7 +14,7 @@ import Feedback from "../Feedback";
 import FeedbackImage from "../../images/feedback.png";
 // import Typewriter from "../Typewriter";
 import { ContentCopy } from "@mui/icons-material";
-import React, { useState, useEffect } from "react";
+
 
 const languageNames = {
   eng: "English",
@@ -43,6 +44,7 @@ const TranslateTextArea = ({
   setAutoDetected,
   autoDetected,
   charCountLimit,
+  forceLanguageSelect = false,
 }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [charCount, setCharCount] = useState(0);
