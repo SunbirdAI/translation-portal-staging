@@ -8,6 +8,11 @@ describe("Test changes", () => {
     // Visit homepage
     cy.visit("/");
 
+    //close note
+    cy.get('[data-testid="note"]').should("be.visible");
+    cy.get('[data-testid="close-note"]').click();
+    cy.get('[data-testid="note"]').should("not.exist");
+
     cy.get("[data-testid='show-sample-phrases']").click().should("be.visible");
 
     for (const [lang, sections] of Object.entries(samplePhraseDict.auto)) {
