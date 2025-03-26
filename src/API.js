@@ -1,16 +1,16 @@
 import pRetry from "p-retry";
 
-const FEEDBACK_URL = process.env.REACT_APP_FEEDBACK_URL;
-const HUGGING_FACE_API_KEY = process.env.REACT_APP_HUGGING_FACE_API_KEY;
-export const tracking_id = process.env.REACT_APP_GA4_TRACKING_ID;
+const FEEDBACK_URL = import.meta.env.VITE_FEEDBACK_URL;
+const HUGGING_FACE_API_KEY = import.meta.env.VITE_HUGGING_FACE_API_KEY;
+export const tracking_id = import.meta.env.VITE_GA4_TRACKING_ID;
 
-const languageIdUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/classify_language`;
-const translationUrl = `${process.env.REACT_APP_SB_API_URL}/tasks/nllb_translate`;
+const languageIdUrl = `${import.meta.env.VITE_SB_API_URL}/tasks/classify_language`;
+const translationUrl = `${import.meta.env.VITE_SB_API_URL}/tasks/nllb_translate`;
 const textToSpeechUrl =
   "https://api-inference.huggingface.co/models/Sunbird/sunbird-lug-tts";
 
 const requestHeaders = {
-  Authorization: `Bearer ${process.env.REACT_APP_SB_API_TOKEN}`,
+  Authorization: `Bearer ${import.meta.env.VITE_SB_API_TOKEN}`,
   "Content-Type": "application/json",
 };
 

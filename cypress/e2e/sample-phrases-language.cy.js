@@ -8,6 +8,12 @@ describe("Test changes", () => {
   it(`Sample phrases match text in textarea for source language`, () => {
     // Visit homepage
     cy.visit("/");
+
+    //close note
+    cy.get('[data-testid="note"]').should("be.visible");
+    cy.get('[data-testid="close-note"]').click();
+    cy.get('[data-testid="note"]').should("not.exist");
+
     cy.fixture("languages").then((languageNames) => {
       languageNames.forEach((value) => {
         cy.get("[data-testid='language-dropdown']")
@@ -38,7 +44,7 @@ describe("Test changes", () => {
             .click()
             .should("be.visible");
 
-          //checking if each phrase is actually added to source textare on click
+          //checking if each phrase is actually added to source textarea on click
           sections[1].forEach((phrase) => {
             cy.contains(phrase, { timeout: 20000 })
               .should("be.visible")
