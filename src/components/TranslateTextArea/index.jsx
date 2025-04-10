@@ -9,6 +9,7 @@ const TranslateTextArea = ({
   setSourceLanguage,
   setTargetLanguage,
   swap,
+  setSwap,
   children,
 }) => {
   return (
@@ -21,6 +22,7 @@ const TranslateTextArea = ({
           setSourceLanguage={setSourceLanguage}
           setTargetLanguage={setTargetLanguage}
           swap={swap}
+          setSwap={setSwap}
           data-testid="language-dropdown"
         />
       </OverlayContainer>

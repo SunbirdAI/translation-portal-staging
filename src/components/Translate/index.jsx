@@ -97,7 +97,7 @@ const Translate = () => {
             <Tooltip title="Swap languages" data-testid="swap-languages">
               <SwapperIcon
                 onClick={() => {
-                  setSwap(!swap);
+                  setSwap(true);
                   setText(translation);
                   setTranslation("");
                 }}
@@ -116,6 +116,7 @@ const Translate = () => {
             setSourceLanguage={setSourceLanguage}
             setTargetLanguage={setTargetLanguage}
             swap={swap}
+            setSwap={setSwap}
             data-testid="source-language"
           >
             <SourceTextArea text={text} setText={setText} />
@@ -128,7 +129,7 @@ const Translate = () => {
           >
             <SwapperIcon
               onClick={() => {
-                setSwap(!swap);
+                setSwap(true);
                 setText(translation);
                 setTranslation("");
               }}
@@ -144,6 +145,7 @@ const Translate = () => {
             setSourceLanguage={setSourceLanguage}
             setTargetLanguage={setTargetLanguage}
             swap={swap}
+            setSwap={setSwap}
             data-testid="translation"
           >
             <TargetTextArea

@@ -9,6 +9,7 @@ const LanguageDropdown = ({
   setSourceLanguage,
   setTargetLanguage,
   swap = false,
+  setSwap,
 }) => {
   // Use intial value from props
   const [selectedLanguage, setSelectedLanguage] = React.useState(null);
@@ -60,6 +61,7 @@ const LanguageDropdown = ({
         setSourceLanguage(targetLanguage);
         setSelectedLanguage(sourceLanguage);
       }
+      setSwap(false); // Reset swap state after handling
     }
   }, [swap]);
 
