@@ -121,3 +121,20 @@ export const CloseButton = styled.button`
     duration-200
   `}
 `;
+
+export const SwapperContainer = styled.div`
+  ${tw`
+  lg:hidden
+  flex
+  items-center
+  justify-center
+  gap-2 
+  mb-2
+  `}
+`;
+
+export const SwapperIcon = styled.button`
+  ${tw`
+  hover:opacity-50 disabled:opacity-50 text-sunbird-navy-blue
+  `}
+`;

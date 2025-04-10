@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import {
   PhraseList,
   PhraseListItem,
@@ -34,6 +34,9 @@ const TabPanel = ({ value, index, sentences, setSamplePhrase }) => (
 );
 
 const SamplePhrases = ({ sourceLanguage, setSamplePhrase }) => {
+  if (samplePhraseDict[sourceLanguage] === undefined) {
+    return null;
+  }
   const [tab, setTab] = useState(0);
 
   const handleChange = (event, newTab) => {

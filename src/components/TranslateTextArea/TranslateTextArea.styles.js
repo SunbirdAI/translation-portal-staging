@@ -26,8 +26,10 @@ export const TextArea = styled(TextareaAutosize)`
 
 export const TranslateFooter = styled.div`
   align-self: flex-end;
-  margin-top: 2rem;
+  margin-top: 1rem;
   display: flex;
+  align-items: center;
+  height: 2rem;
 `;
 
 export const ButtonContainer = styled.div`

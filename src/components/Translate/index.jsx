@@ -1,54 +1,27 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   MainContainer,
-  Note,
-  CloseButton,
   SplitContainer,
-  NoteText,
-  NoteContent,
+  SwapperContainer,
+  SwapperIcon,
 } from "./Translate.styles";
 import TranslateTextArea from "../TranslateTextArea";
-import { debounce } from "lodash";
-import { languageId, translateSB } from "../../API";
+import SourceTextArea from "../SourceTextArea";
 import SamplePhrases from "../SamplePhrases";
-import { Alert, Snackbar } from "@mui/material";
-
-const localLangOptions = [
-  { label: "English", value: "eng" },
-  { label: "Luganda", value: "lug" },
-  { label: "Acholi", value: "ach" },
-  { label: "Ateso", value: "teo" },
-  { label: "Lugbara", value: "lgg" },
-  { label: "Runyankole", value: "nyn" },
-];
-
-const autoOption = [{ label: "Auto detection", value: "auto" }];
-const sourceOptions = [...autoOption, ...localLangOptions];
-
-const getTargetOptions = (sourceLanguage) =>
-  localLangOptions.filter((option) => option.value !== sourceLanguage);
+import TargetTextArea from "../TargetTextArea";
+import { translateSB } from "../../API";
+import { Alert, Snackbar, Tooltip } from "@mui/material";
+import SwapHorizontalCircleOutlinedIcon from "@mui/icons-material/SwapHorizontalCircleOutlined";
+import { localLangOptions } from "../../languagesConstants";
 
 const Translate = () => {
-  // Source Area States
-  const [sourceText, setSourceText] = useState("");
-  const [sourceLanguage, setSourceLanguage] = useState(autoOption[0].value);
-  const [detectedLanguage, setDetectedLanguage] = useState(null);
-  const [autoDetected, setAutoDetected] = useState(true);
-
-  // Translation Area States
+  const [sourceLanguage, setSourceLanguage] = useState("eng");
+  const [targetLanguage, setTargetLanguage] = useState("lug");
+  const [text, setText] = useState("");
   const [translation, setTranslation] = useState("");
-  const [targetLanguage, setTargetLanguage] = useState(
-    localLangOptions[1].value
-  );
   const [isLoading, setIsLoading] = useState(false);
-
-  // UI States
-  const [showNote, setShowNote] = useState(true);
+  const [swap, setSwap] = useState(false);
   const [error, setError] = useState(false);
-
-  // Refs for tracking
-  const prevTargetRef = useRef(targetLanguage);
-  const isComponentMounted = useRef(true);
 
   // Close error snackbar
   const handleClose = (event, reason) => {
@@ -56,87 +29,38 @@ const Translate = () => {
     setError(false);
   };
 
-  // Prevent same source and target language
-  useEffect(() => {
-    if (sourceLanguage === targetLanguage) {
-      const newTargetLanguage =
-        getTargetOptions(sourceLanguage)[0]?.value || localLangOptions[0].value;
-      setTargetLanguage(newTargetLanguage);
-    }
-  }, [sourceLanguage]);
+  const findLanguage = (languageCode) => {
+    return localLangOptions.find((option) => option.value === languageCode)
+      ?.label;
+  };
 
-  // Language Detection
-  const detectLanguage = useCallback(
-    debounce(async (text) => {
-      if (!text || text.trim() === "" || !autoDetected) {
-        setDetectedLanguage(null);
-        return;
-      }
-
-      try {
-        const detected = await languageId(text.substring(0, 18));
-        
-        if (!isComponentMounted.current) return;
-
-        if (detected === "language not detected") {
-          setDetectedLanguage("auto");
-          setSourceLanguage("auto");
-          setError(true);
-        } else {
-          setDetectedLanguage(detected);
-          
-          // Only update source language if different
-          if (detected !== sourceLanguage) {
-            setSourceLanguage(detected);
-
-            // Check if detected language is same as target
-            if (detected === targetLanguage) {
-              setError(true);
-              // Automatically change target language
-              const newTargetLanguage = getTargetOptions(detected)[0]?.value;
-              setTargetLanguage(newTargetLanguage);
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Language detection error:", error);
-        setDetectedLanguage(null);
-      }
-    }, 1000),
-    [autoDetected, sourceLanguage, targetLanguage]
-  );
-
-  // Trigger language detection
-  useEffect(() => {
-    detectLanguage(sourceText);
-  }, [sourceText, detectLanguage]);
+  // Refs for tracking
+  const prevTargetRef = useRef(targetLanguage);
+  const isComponentMounted = useRef(true);
 
   // Translation Logic
   const translate = useCallback(
     async (text) => {
+      setTranslation("");
       // Prevent translation if no text or source language is auto
       if (!text || text.trim() === "") {
-        setTranslation("");
         setIsLoading(false);
         return;
       }
 
-      // Skip translation if source language is auto
-      if (sourceLanguage === "auto") {
-        //setTranslation("Please select a source language");
+      if (sourceLanguage === null || targetLanguage === null) {
         setIsLoading(false);
         return;
       }
-
       try {
         setIsLoading(true);
-        const result = await translateSB(
-          text,
-          sourceLanguage,
-          targetLanguage
-        );
+        const result = await translateSB(text, sourceLanguage, targetLanguage);
 
         if (isComponentMounted.current) {
+          if (result === "Try again") {
+            setError(true);
+            return;
+          }
           setTranslation(result);
         }
       } catch (error) {
@@ -160,113 +84,90 @@ const Translate = () => {
     prevTargetRef.current = targetLanguage;
 
     // Debounce translation
-    const timeoutId = setTimeout(() => translate(sourceText), 500);
+    const timeoutId = setTimeout(() => translate(text), 500);
     return () => clearTimeout(timeoutId);
-  }, [sourceText, targetLanguage, sourceLanguage, translate]);
-
-  // Hide note after timeout
-  useEffect(() => {
-    const timer = setTimeout(() => setShowNote(false), 10000);
-    return () => clearTimeout(timer);
-  }, []);
+  }, [text, targetLanguage, sourceLanguage, translate]);
 
   return (
     <div className="h-fit">
-      {showNote && (
-        <Note data-testid="note"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 50 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
-        <NoteContent>
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-8 w-8 text-blue-500 mr-4 shrink-0" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
-            />
-          </svg>
-          <NoteText>
-            Our auto language detection currently supports the following languages: 
-            English, Luganda, Acholi, Ateso, Lugbara, and Runyankole. 
-            We are actively working on improving this feature and adding support 
-            for more languages in the future.
-          </NoteText>
-          <CloseButton data-testid="close-note" onClick={() => setShowNote(false)}>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5" 
-              viewBox="0 0 20 20" 
-              fill="currentColor"
-            >
-              <path 
-                fillRule="evenodd" 
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" 
-                clipRule="evenodd" 
-              />
-            </svg>
-          </CloseButton>
-        </NoteContent>
-      </Note>
-      )}
       <MainContainer>
+        {sourceLanguage !== null && targetLanguage !== null && (
+          <SwapperContainer>
+            <p>{findLanguage(sourceLanguage)}</p>
+            <Tooltip title="Swap languages" data-testid="swap-languages">
+              <SwapperIcon
+                onClick={() => {
+                  setSwap(!swap);
+                  setText(translation);
+                  setTranslation("");
+                }}
+              >
+                <SwapHorizontalCircleOutlinedIcon color="inherit" />
+              </SwapperIcon>
+            </Tooltip>
+            <p>{findLanguage(targetLanguage)}</p>
+          </SwapperContainer>
+        )}
         <SplitContainer>
           <TranslateTextArea
-            placeholder="Enter text"
-            dropDownOptions={sourceOptions}
-            setSourceLanguage={setSourceLanguage}
-            text={sourceText}
-            setText={setSourceText}
-            detectedLanguage={detectedLanguage}
-            setAutoDetected={setAutoDetected}
-            autoDetected={autoDetected}
-            charCountLimit={true}
-            sourceLanguage={sourceLanguage}
-            data-testid="source-language"
-            forceLanguageSelect={detectLanguage === 'auto' ? true : false}
-          />
-          <TranslateTextArea
-            placeholder="Translation"
-            disabled={true}
-            dropDownOptions={getTargetOptions(sourceLanguage)}
-            setTargetLanguage={setTargetLanguage}
-            translation={translation}
-            text={sourceText}
+            type="source"
             sourceLanguage={sourceLanguage}
             targetLanguage={targetLanguage}
-            isLoading={isLoading}
-            showCopyButton={true}
+            setSourceLanguage={setSourceLanguage}
+            setTargetLanguage={setTargetLanguage}
+            swap={swap}
+            data-testid="source-language"
+          >
+            <SourceTextArea text={text} setText={setText} />
+          </TranslateTextArea>
+          <Tooltip
+            title="Swap languages"
+            data-testid="swap-languages"
+            className="lg:flex hidden"
+            placement="top"
+          >
+            <SwapperIcon
+              onClick={() => {
+                setSwap(!swap);
+                setText(translation);
+                setTranslation("");
+              }}
+            >
+              <SwapHorizontalCircleOutlinedIcon color="inherit" />
+            </SwapperIcon>
+          </Tooltip>
+
+          <TranslateTextArea
+            type="target"
+            sourceLanguage={sourceLanguage}
+            targetLanguage={targetLanguage}
+            setSourceLanguage={setSourceLanguage}
+            setTargetLanguage={setTargetLanguage}
+            swap={swap}
             data-testid="translation"
-            charCountLimit={false}
-          />
+          >
+            <TargetTextArea
+              translation={translation}
+              sourceLanguage={sourceLanguage}
+              targetLanguage={targetLanguage}
+              isLoading={isLoading}
+            />
+          </TranslateTextArea>
         </SplitContainer>
+
         <Snackbar
           open={error}
           autoHideDuration={6000}
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <Alert
-            severity="error"
-            sx={{ width: "100%" }}
-            onClose={handleClose}
-          >
-         {
-          detectedLanguage === 'auto' || detectedLanguage === null ? "Auto detect failed. Please choose the language from the dropdown" : "Detected language is the same as the target language."
-         }
+          <Alert severity="error" sx={{ width: "100%" }} onClose={handleClose}>
+            Translation failed. Please try again.
           </Alert>
         </Snackbar>
         <SamplePhrases
-          sourceLanguage={sourceLanguage}
-          setSamplePhrase={setSourceText}
+          sourceLanguage={sourceLanguage === null ? "auto" : sourceLanguage}
+          setSamplePhrase={setText}
         />
       </MainContainer>
     </div>
