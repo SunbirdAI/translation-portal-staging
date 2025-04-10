@@ -4,8 +4,12 @@ const FEEDBACK_URL = import.meta.env.VITE_FEEDBACK_URL;
 const HUGGING_FACE_API_KEY = import.meta.env.VITE_HUGGING_FACE_API_KEY;
 export const tracking_id = import.meta.env.VITE_GA4_TRACKING_ID;
 
-const languageIdUrl = `${import.meta.env.VITE_SB_API_URL}/tasks/classify_language`;
-const translationUrl = `${import.meta.env.VITE_SB_API_URL}/tasks/nllb_translate`;
+const languageIdUrl = `${
+  import.meta.env.VITE_SB_API_URL
+}/tasks/classify_language`;
+const translationUrl = `${
+  import.meta.env.VITE_SB_API_URL
+}/tasks/nllb_translate`;
 const textToSpeechUrl =
   "https://api-inference.huggingface.co/models/Sunbird/sunbird-lug-tts";
 
@@ -54,10 +58,10 @@ export const getTranslation = async (text, sourceLang, targetLang) => {
   try {
     const response = await fetch(translationUrl, requestOptions);
     if (response.status === 422) {
-        const responseJson = await response.json();
-        console.error("Validation error:", responseJson);
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
+      const responseJson = await response.json();
+      console.error("Validation error:", responseJson);
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);
     }

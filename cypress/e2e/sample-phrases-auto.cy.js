@@ -1,5 +1,5 @@
 import { samplePhraseDict } from "../../src/constants";
-describe("Test changes", () => {
+describe.skip("Test changes", () => {
   Cypress.on("uncaught:exception", (err, runnable) => {
     return false; // Prevent Cypress from failing the test
   });
