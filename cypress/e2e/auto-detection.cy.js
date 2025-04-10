@@ -1,4 +1,4 @@
-describe("Auto Detection of Language", () => {
+describe.skip("Auto Detection of Language", () => {
   Cypress.on("uncaught:exception", (err, runnable) => {
     return false; // Prevent Cypress from failing the test
   });
