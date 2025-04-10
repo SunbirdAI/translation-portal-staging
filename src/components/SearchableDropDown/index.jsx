@@ -62,6 +62,7 @@ const LanguageDropdown = ({
         setSelectedLanguage(sourceLanguage);
       }
       setSwap(false); // Reset swap state after handling
+    }
   }, [swap]);
 
   // Update internal state when props change (from parent)
